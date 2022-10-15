@@ -1,8 +1,6 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 
-def getGoodsInfo(response):
+def getGoodsInfoByUrl(response):
 # url = 'https://www.amazon.co.jp/%E3%83%90%E3%83%AB%E3%83%9F%E3%83%A5%E3%83%BC%E3%83%80-%E9%9B%BB%E6%B0%97%E7%82%8A%E9%A3%AF%E5%99%A8-BALMUDA-Gohan-K03A-WH/dp/B01NBX0HC7'
 # response = getPageFromAmazon(url)
     soup = BeautifulSoup(response, 'html.parser')
