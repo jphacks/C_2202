@@ -12,7 +12,7 @@ class App extends Component {
           <Routes>
             <Route path={`/`} element={<StartPage />} />
             <Route path={`/radar/`} element={<RadarChartComponent />} />
-            <Route path={`/radar_2/`} element={<MyResponsiveRadar />} />
+            <Route path={`/radar2/`} element={<MyResponsiveRadar />} />
           </Routes>
         </BrowserRouter>
       </div>
