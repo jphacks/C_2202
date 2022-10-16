@@ -1,7 +1,6 @@
-import { ResponsiveRadar } from '@nivo/radar'
 import "../styles/radarChartPage.css"
 import MenuBar from "../components/MenuBar"
-import React from "react";
+import React, { useState }  from "react";
 import {
     Chart as ChartJS,
     RadialLinearScale,
@@ -11,7 +10,9 @@ import {
     Tooltip,
     Legend,
   } from 'chart.js';
-  import { Radar } from 'react-chartjs-2';
+import { Radar } from 'react-chartjs-2';
+// import { AiOutlineCaretDow } from 'react-icons/ai'
+import { FaGithub } from 'react-icons/fa'
 
 ChartJS.register(
     RadialLinearScale,
@@ -23,14 +24,13 @@ ChartJS.register(
   );
 
 export const MyResponsiveRadar = () => {
-      
-
-    const data = [
+const data = [
         {
             id: 0,
             title: "PFUキーボードHHKBProfessionalHYBRID日本語配列/墨",
             price: 3100,
             star: 117,
+            hoge: 100,
             img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
             Brand: "HHKB",
             メーカー: "PFU",
@@ -47,6 +47,7 @@ export const MyResponsiveRadar = () => {
             title: "a",
             price: 1900,
             star: 7,
+            hoge: 100,
             img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
             Brand: "HHKB",
             メーカー: "PFU",
@@ -63,6 +64,7 @@ export const MyResponsiveRadar = () => {
             title: "v",
             price: 3100,
             star: 47,
+            hoge: 100,
             img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
             Brand: "HHKB",
             メーカー: "PFU",
@@ -79,6 +81,7 @@ export const MyResponsiveRadar = () => {
             title: "z",
             price: 3190,
             star: 7,
+            hoge: 100,
             img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
             Brand: "HHKB",
             メーカー: "PFU",
@@ -90,11 +93,10 @@ export const MyResponsiveRadar = () => {
             同梱バッテリー: "はい",
             商品の重量: "820g",
         }
-    ];
+];
 var columnList = []
 var valueList = []
 var dataList = []
-var newValueList = []
 var isFirst = true
 
 for(var i = 0; i < data.length; i++){
@@ -112,7 +114,7 @@ function addData(key,value,i){
             return p[key];
         });
         const maxValue = Math.max.apply(null, uniqueKey)
-        valueList[i].push(value)
+        valueList[i].push(value / maxValue * 100)
         dataList[i][key] = value / maxValue * 100
     }
 }
@@ -134,77 +136,99 @@ for (const i in data){
     }
 }
 
-console.log(dataList)
-var NewDataSet = {
-    labels: ['Thing 1', 'Thing 2', 'Thing 3', 'Thing 4', 'Thing 5', 'Thing 6'],
-    datasets: [
-      {
-        label: '# of Votes',
-        data: [2, 9, 3, 5, 2, 3],
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-        borderColor: 'rgba(255, 99, 132, 1)',
-        borderWidth: 1,
-      },
-    ],
-};
+const NewDataSet = {
+    labels: columnList,
+    datasets: [],
+}
 
-    return(
+for(let i = 0; i < data.length; i++){
+    NewDataSet.datasets.push(new Object())
+    NewDataSet.datasets[i].hidden = true
+    NewDataSet.datasets[i].label = valueList[i][0]
+    NewDataSet.datasets[i].data = []
+    for (let j = 0; j < valueList[i].length - 1; j++){
+        NewDataSet.datasets[i].data.push(valueList[i][j+1])
+    }
+    NewDataSet.datasets[i].backgroundColor = 'rgba(255, 99, 132, 0.2)'
+    NewDataSet.datasets[i].borderColor = 'rgba(255, 99, 132, 1)'
+    NewDataSet.datasets[i].borderWidth = 1
+    NewDataSet.datasets[i].pointBackgroundColor = 'rgb(255, 99, 132)'
+    NewDataSet.datasets[i].pointBorderColor = '#fff'
+    NewDataSet.datasets[i].pointHoverBackgroundColor = '#fff'
+    NewDataSet.datasets[i].pointHoverBorderColor = 'rgb(255, 99, 132)'
+}
+
+const options = {
+    plugins:{
+        legend:{
+            position: 'right',
+            labels:{
+                color: "#CCFFEE",
+                font:{
+                    size: 15,
+                }
+            }
+        },
+    },
+    scales: {
+        r: {
+            angleLines: {
+                color: "#CCFFEE",
+                display: true,
+                lineWidth: 1
+            },
+            pointLabels: {
+                color: "#ededed",
+                font:{
+                    size: 11.5
+                }
+            },
+            max: 120,
+            min: 0,
+            ticks: {
+                display: false,
+                stepSize: 20
+            }
+        }
+      }
+};
+const [visible, setVisible] = useState(false);
+const [visibleIndex, setVisibleIndex] = useState(-1);
+const isVisible = (index) => {
+    if(visibleIndex === -1){
+        setVisible(!visible)
+        setVisibleIndex(index)
+    }else if(index === visibleIndex){
+        setVisible(!visible)
+    }else if(visible){
+        setVisibleIndex(index)
+    }else{
+        setVisibleIndex(index)
+        setVisible(!visible)
+    }
+}
+const msg = (index) => {
+    let item = []
+    if(visible){
+        if(visibleIndex === index){
+            const property = Object.entries(data[index]);
+            property.forEach(function(v){
+                item += v.join(':');
+                item += ',\n';
+            });
+            return <ul>{item}</ul>;
+        }
+    }
+    return <p>Show Detail</p>
+}
+
+return(
     <div>
         <MenuBar />
         <div className='background'>
         <div className="columnContainer">
-        <ResponsiveRadar
-            data={dataList}
-            theme={{
-                fontSize: 20,
-                textColor: "#ebebeb", 
-                grid:{
-                    line:{
-                        stroke: "#ccffee",
-                        strokeWidth: 2
-                    }                       
-                }            
-            }}
-            keys={columnList}
-            itemTextColor = "#ebebeb"
-            indexBy="title"
-            valueFormat=">-0.2f"
-            margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
-            borderColor={{ from: 'color' }}
-            gridShape="linear"
-            gridLabelOffset={36}
-            dotSize={10}
-            dotColor={{ theme: 'background' }}
-            dotBorderWidth={2}
-            dotBorderColor={{ from: 'color', modifiers: [] }}
-            colors={{ scheme: 'set2' }}
-            fillOpacity={0.4}
-            blendMode="multiply"
-            motionConfig="wobbly"
-            gridLevels={5}
-            legends={[
-                {
-                    anchor: 'top-left',
-                    direction: 'column',
-                    translateX: -50,
-                    translateY: -40,
-                    itemWidth: 80,
-                    itemHeight: 20,
-                    itemTextColor: '#999',
-                    fontSize: 15,
-                    symbolSize: 12,
-                    symbolShape: 'circle',
-                    effects: [
-                        {
-                            on: 'hover',
-                            style: {
-                                itemTextColor: '#000'
-                            }
-                        }
-                    ]
-                }
-            ]}/>
-            </div>
+            <Radar data={NewDataSet} options={options}/>
+        </div>
             <div className="right">
                 <div className='p'>
                     <div className='radar-title'>
@@ -214,7 +238,13 @@ var NewDataSet = {
                     </div>
                     {dataList.map((data, index) => {
                         return(
-                            <p className='textcolor'>{data["title"]}</p>
+                            <div>
+                                <p className='textcolor'>{data["title"]}</p>
+                                <button onClick={() => isVisible(index)}>
+                                    <FaGithub />
+                                </button>
+                                {msg(index)}
+                            </div>
                         )
                     })}
                 </div>

@@ -1,8 +1,8 @@
 .columnContainer {
-    position: sticky;
-    width: 1000px;
-    height: 628px;
-    margin: 0 auto;
+    justify-content: flex-start;
+    width: 700px;
+    height: 600px;
+    left: 10%;
     display: flex;
     justify-content: flex-start;
 }
