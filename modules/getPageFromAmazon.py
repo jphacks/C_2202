@@ -8,7 +8,8 @@ def getPageFromAmazon(url):
     options.add_argument('--headless')
 
     # ドライバーまでのpathは各自変更してください
-    path = "C:/Users/Riku/Downloads/chromedriver_win32/chromedriver"
+    path = "C:/Users/jayji/Downloads/chromedriver_win32/chromedriver.exe"
+    #C:/Users/Riku/Downloads/chromedriver_win32/chromedriverに直す。
     driver = webdriver.Chrome(path, options=options)
     driver.get(url)
     driver.implicitly_wait(10)   
