@@ -22,8 +22,11 @@ def read_root():
 def urlReceive(request):
     url = request
     res = getPageFromAmazon(url)
-    besicInfo = getGoodsInfoByUrl(res)
-    return JSONResponse(besicInfo)
+    try:
+        besicInfo = getGoodsInfoByUrl(res)
+        return JSONResponse(besicInfo)
+    except AttributeError:
+        return {"ERROR":"URL is wrong"}
 
 @app.post("/newdata/download/")
 def downloadCsv(request):
@@ -33,9 +36,6 @@ def downloadCsv(request):
 
 @app.post("/newdata/upload/")
 def upload_file(upload_file: UploadFile = File(...)):
-
-    # ファイルサイズ検証
-
     tmp_path: Path = ""
     try:
         suffix = Path(upload_file.filename).suffix

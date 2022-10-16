@@ -14,7 +14,7 @@ def isIntUnit(s):
         return False
 
 def isFloatUnit(s):
-    if re.fullmatch(r'\d+.\d+\D+', s):
+    if re.fullmatch(r'\d+\.\d+\D+', s):
         return True
     else:
         return False
@@ -52,7 +52,7 @@ def format(labelText, valueText):
         return labelText, valueText
 
     elif (isFloatUnit(valueText)):
-        list = re.findall(r'(\d+.\d+)(\D+)', valueText)
+        list = re.findall(r'(\d+\.\d+)(\D+)', valueText)
         unit = unitFormat(list[0][1])
         labelText = labelText + "(" + unit + ")"
         valueText = float(list[0][0])
