@@ -1,15 +1,18 @@
 .columnContainer {
     position: sticky;
-    width: 745px;
+    width: 1000px;
     height: 628px;
-    left: 75px;
-    top: 60px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-start;
 }
-.body {
+.background {
     background: radial-gradient(51.08% 69.33% at 32.29% 57.71%, rgba(24, 244, 244, 0.2) 0%, rgba(0, 178, 255, 0.148958) 0.01%, rgba(40, 54, 84, 0) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */, #283654;
-    background-repeat: no-repeat;
-    background-size: 100%;
-    background-position: bottom;
+    height: calc(100vh - 56px);
+    width: 100%;
+    margin: 0;
+    align-items: flex-start;
+    display: flex;
 }
 
 .right {
@@ -17,8 +20,24 @@
     justify-content: flex-end;
 }
 .p{
-    
-    width:800px;
+    margin : 10% ;
+    width:600px;
     text-align:center;
-    background-color:#eee;
 }
+.textcolor{
+    color: #ededed;
+    margin: 3%;
+}
+.radar-title {
+  margin: 0 auto;
+  width: 9em;
+  font-size: 28px;
+  font: bold;
+  padding-top: 20px;
+  border-bottom: 1px solid #d2d2d2;
+}
+.radar-title-text {
+  color: #d2d2d2;
+  text-align: center;
+}
+  
