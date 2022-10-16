@@ -29,6 +29,7 @@ def getGoodsInfoByUrl(response):
 
     ths = table.find_all('th') 
     trs = table.find_all('tr') 
+        # あだすくん作業
     for i in range(len(ths)):
         labelText = ths[i].text 
         labelText = labelText.replace(' ','')
@@ -38,6 +39,12 @@ def getGoodsInfoByUrl(response):
         valueText = valueText.replace(' ', '') 
         valueText = valueText.replace('\u200e', '') 
         valueText = valueText.replace('\n', '')
+        #ここに、もしvalueTextが　数字＋単位（文字列）の形になっていたら、その単位を取ってlabelTextにくっつけてvalueTextをfloat型にする処理を書いてほしい
+
+
+
+
+
         besicInfo[labelText] = valueText
 
     return besicInfo
