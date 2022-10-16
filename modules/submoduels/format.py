@@ -37,6 +37,7 @@ def unitFormat(s):
             s = v
             return s
     return s
+
 def format(labelText, valueText):
     if (isNum(valueText)):
         valueText = float(valueText)
