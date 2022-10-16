@@ -11,9 +11,6 @@ from modules.chengeJsonToCsv import chengeJsonToCsv
 
 app = FastAPI()
 
-class Itme(BaseModel):
-    url: str
-
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
@@ -50,11 +47,9 @@ def upload_file(upload_file: UploadFile = File(...)):
         )
     finally:
         upload_file.file.close()
-
     list = []
     with open(tmp_path, "r", encoding="utf-8_sig") as f:
         reader = csv.DictReader(f)
         for row in reader:
             list.append(row)
-
     return list
