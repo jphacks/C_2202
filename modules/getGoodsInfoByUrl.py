@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
-import re
+from submoduels.format import format
+
 def getGoodsInfoByUrl(response):
     soup = BeautifulSoup(response, 'html.parser')
     besicInfo = {}
@@ -39,12 +40,13 @@ def getGoodsInfoByUrl(response):
         valueText = valueText.replace(' ', '') 
         valueText = valueText.replace('\u200e', '') 
         valueText = valueText.replace('\n', '')
+        labelText, valueText = format(labelText, valueText)
         besicInfo[labelText] = valueText
 
-        result1 = re.findall(r"\d+", valueText)
-        print(result1)
-        #ここに、もしvalueTextが　数字＋単位（文字列）の形になっていたら、その単位を取ってlabelTextにくっつけてvalueTextをfloat型にする処理を書いてほしい
-        s = valueText
-        result2 = re.sub(r"[^a-wy-zA-Z]", "", s)
-        print(f'{labelText} {result2}')
+        # result1 = re.findall(r"\d+", valueText)
+        # print(result1)
+        # #ここに、もしvalueTextが　数字＋単位（文字列）の形になっていたら、その単位を取ってlabelTextにくっつけてvalueTextをfloat型にする処理を書いてほしい
+        # s = valueText
+        # result2 = re.sub(r"[^a-wy-zA-Z]", "", s)
+        # print(f'{labelText} {result2}')
     return besicInfo
