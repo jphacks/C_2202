@@ -12,6 +12,7 @@ def isIntUnit(s):
         return True
     else:
         return False
+
 def isFloatUnit(s):
     if re.fullmatch(r'\d+.\d+\D+', s):
         return True
