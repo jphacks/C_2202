@@ -1,7 +1,5 @@
 import csv
 import shutil
-import pprint
-from typing import List
 from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from pathlib import Path
 from tempfile import NamedTemporaryFile
