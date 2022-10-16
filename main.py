@@ -14,7 +14,7 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
-@app.post("/newdata/")
+@app.post("/edit/")
 def urlReceive(request):
     url = request
     res = getPageFromAmazon(url)
