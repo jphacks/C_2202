@@ -3,7 +3,6 @@ import shutil
 from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from pydantic import BaseModel
 from fastapi.responses import JSONResponse, FileResponse
 from modules.getPageFromAmazon import getPageFromAmazon
 from modules.getGoodsInfoByUrl import getGoodsInfoByUrl
