@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from submoduels.format import format
+from .submoduels.format import format
 
 def getGoodsInfoByUrl(response):
     soup = BeautifulSoup(response, 'html.parser')
