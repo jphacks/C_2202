@@ -4,19 +4,42 @@ from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from fastapi.responses import JSONResponse, FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from modules.getPageFromAmazon import getPageFromAmazon
 from modules.getGoodsInfoByUrl import getGoodsInfoByUrl
 from modules.chengeJsonToCsv import chengeJsonToCsv
 
 app = FastAPI()
 
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+    'http://localhost:8000',
+    'http://localhost:3000',
+    'http://localhost:3000/edit/url',
+    'http://localhost:8000/edit/url',
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class Body(BaseModel):
+    productURL : str
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
-@app.post("/edit/url")
-def urlReceive(request):
-    url = request.productURL
+@app.post("/edit/url/")
+def urlReceive(body : Body):
+    print(body.productURL)
+    url = body.productURL
     res = getPageFromAmazon(url)
     try:
         besicInfo = getGoodsInfoByUrl(res)

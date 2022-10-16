@@ -238,13 +238,15 @@ const EditPage = () => {
   };
   const getProductData = (productURL) => {
     console.log("enter");
+    console.log(productURL);
     axios
       .post(backendURL + "/edit/url", {
         productURL: productURL,
       })
       .then(function (res) {
+        console.log(res.data);
         try {
-          setDataList([...dataList, res]);
+          setDataList([...dataList, res.data]);
         } catch (e) {
           window.alert(e);
         }
