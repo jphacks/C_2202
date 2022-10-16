@@ -1,5 +1,7 @@
 import csv
 import shutil
+import pprint
+from typing import List
 from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -42,7 +44,6 @@ def upload_file(upload_file: UploadFile = File(...)):
         with NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             shutil.copyfileobj(upload_file.file, tmp)
             tmp_path = Path(tmp.name)
-            print(tmp_path)
     except Exception as e:
         print(f"一時ファイル作成: {e}")
         raise HTTPException(
@@ -51,9 +52,11 @@ def upload_file(upload_file: UploadFile = File(...)):
         )
     finally:
         upload_file.file.close()
+
     list = []
     with open(tmp_path, "r", encoding="utf-8_sig") as f:
         reader = csv.DictReader(f)
-        list.append(reader)
+        for row in reader:
+            list.append(row)
 
     return list

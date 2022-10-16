@@ -14,9 +14,12 @@ def getGoodsInfoByUrl(response):
         price = soup.find('span', class_='a-offscreen').text
         price = price.replace('￥', '')
         price = int(price.replace(',', ''))
-    star = soup.find('span', class_='a-icon-alt').text
-    star = star.replace('5つ星のうち', '')
-    star = float(star)
+    try:
+        star = soup.find('span', class_='a-icon-alt').text
+        star = star.replace('5つ星のうち', '')
+        star = float(star)
+    except:
+        star = 0.0
     img = soup.find('div', class_="imgTagWrapper").img['data-old-hires']
 
     besicInfo['商品名'] = title
