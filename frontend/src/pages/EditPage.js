@@ -1,17 +1,12 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "../styles/editPage.css";
 import StartButton from "../components/StartButton";
 import MenuBar from "../components/MenuBar";
-
-const AddButton = ({ onClicked }) => {
-  return (
-    <button className="btn btn-secondary btn-circle btn-circle-sm m-1">
-      ＋
-    </button>
-  );
-};
+import AddButton from "../components/AddButton";
+import SortButton from "../components/SortButton";
+import InputModal from "../components/InputModal";
 
 const EditPage = () => {
   var data = [
@@ -138,7 +133,7 @@ const EditPage = () => {
     },
   ];
 
-  const [dataList, setDataList] = useState(data);
+  const [dataList, setDataList] = useState(data); // 商品の情報のリスト
   const [columnList, setColumnList] = useState([
     "price",
     "star",
@@ -151,39 +146,11 @@ const EditPage = () => {
     "カラー",
     "同梱バッテリー",
     "商品の重量",
-  ]);
+  ]); // カラムのリスト
+  const [showInputModal, setShowInputModal] = useState(false); // Modalコンポーネントの表示の状態を定義する
+  const [sort, setSort] = useState({}); // ソートするキーと昇順or降順の状態を保持
 
-  // ソート用
-  const [sort, setSort] = useState({});
-  const SortButton = ({ button }) => {
-    return (
-      <div className="sort-buttons">
-        <button
-          onClick={() => handleSort(button)}
-          className={
-            sort.key === button
-              ? sort.order === 1
-                ? "active asc"
-                : "active desc"
-              : ""
-          }
-        ></button>
-      </div>
-    );
-  };
-
-  const handleSort = (key) => {
-    console.log("click : " + key);
-    if (sort.key === key) {
-      setSort({ ...sort, order: -sort.order });
-    } else {
-      setSort({
-        key: key,
-        order: 1,
-      });
-    }
-  };
-
+  // ソートした商品の配列
   const sortedDataList = useMemo(() => {
     let _sortedDataList = dataList;
     if (sort.key) {
@@ -204,6 +171,24 @@ const EditPage = () => {
     }
     return _sortedDataList;
   }, [sort]);
+
+  // モーダルの表示
+  const closeModal = useCallback(() => {
+    setShowInputModal(false);
+    document.removeEventListener("click", closeModal);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      document.removeEventListener("click", closeModal);
+    };
+  }, [closeModal]);
+
+  function openModal(event) {
+    setShowInputModal(true);
+    document.addEventListener("click", closeModal);
+    event.stopPropagation();
+  }
 
   const Cell = ({ item, index, column }) => {
     return <td>{item}</td>;
@@ -252,8 +237,9 @@ const EditPage = () => {
                       {column}
                       <SortButton
                         key={index}
-                        button={column}
-                        handleSort={handleSort}
+                        column={column}
+                        sort={sort}
+                        setSort={setSort}
                       />
                     </th>
                   );
@@ -271,7 +257,11 @@ const EditPage = () => {
               })}
               <tr>
                 <th className="item-title-cell add-button-cell">
-                  <AddButton />
+                  <AddButton
+                    onClicked={(event) => {
+                      openModal(event);
+                    }}
+                  />
                 </th>
               </tr>
             </tbody>
@@ -281,6 +271,13 @@ const EditPage = () => {
       <div className="button-for-rader">
         <StartButton text={"Open with Rader"} />
       </div>
+      {/* Appコンポーネントから子であるModalコンポーネントにpropsを渡す */}
+      <InputModal
+        showFlag={showInputModal}
+        setShowModal={setShowInputModal}
+        onClicked={closeModal}
+        content="Input URL"
+      />
     </>
   );
 };
