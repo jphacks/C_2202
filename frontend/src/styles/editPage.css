@@ -38,10 +38,16 @@
   min-width: 100px;
 }
 
-.data-table th {
+.data-table th.column-cell {
   white-space: nowrap;
   position: sticky;
   top: 0;
+  padding: 5px;
+}
+
+.data-table th.item-title-cell {
+  white-space: nowrap;
+  position: sticky;
   left: 0;
   padding: 5px;
 }
@@ -54,7 +60,7 @@
   padding: 5px;
 }
 
-.data-table .product-title-cell {
+.data-table .item-title-cell {
   border-right: 1px solid #999;
   border-bottom: 1px solid #999;
 }
@@ -65,8 +71,11 @@
   border: none;
 }
 
-.data-table tr:first-child th:first-child {
+.data-table tr:first-child th:first-child:not(.data-header) {
   z-index: 1;
+}
+.data-table tr:first-child th.data-header {
+  z-index: 2;
 }
 
 .data-table th:not(.add-button-cell) {
@@ -111,10 +120,53 @@
   width: 35px;
   height: 35px;
   line-height: 35px;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
 }
 
 .button-for-rader {
   margin: 20px;
   text-align: right;
+}
+
+/*ソート用のボタンのデザイン*/
+:active,
+:focus {
+  outline: none;
+}
+
+.sort-buttons button {
+  border: none;
+  position: relative;
+  display: inline-block;
+  padding: 0.6em 0em 0.6em 1.52em;
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+.sort-buttons button:after {
+  position: absolute;
+  top: calc(50% - 5px);
+  right: 8px;
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid #666;
+  border-right: 2px solid #666;
+  transform: rotate(135deg);
+  transition: 0.3s ease;
+}
+.sort-buttons button.active:after {
+  border-color: #ccc;
+}
+.sort-buttons button.active.asc:after {
+  top: calc(50% - 3px);
+  transform: rotate(315deg);
+}
+.sort-buttons button.active.desc:after {
+  top: calc(50% - 5px);
+  transform: rotate(135deg);
 }
