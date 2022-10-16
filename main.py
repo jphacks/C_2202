@@ -14,9 +14,9 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
-@app.post("/edit/")
+@app.post("/edit/url")
 def urlReceive(request):
-    url = request
+    url = request.productURL
     res = getPageFromAmazon(url)
     try:
         besicInfo = getGoodsInfoByUrl(res)

@@ -1,12 +1,22 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "../styles/editPage.css";
+import "../styles/inputModal.css";
 import StartButton from "../components/StartButton";
 import MenuBar from "../components/MenuBar";
 import AddButton from "../components/AddButton";
 import SortButton from "../components/SortButton";
-import InputModal from "../components/InputModal";
+// import InputModal from "../components/InputModal";
+
+const backendURL = "http://127.0.0.1:8000";
 
 const EditPage = () => {
   var data = [
@@ -133,6 +143,8 @@ const EditPage = () => {
     },
   ];
 
+  const submitRef = useRef(null);
+
   const [dataList, setDataList] = useState(data); // 商品の情報のリスト
   const [columnList, setColumnList] = useState([
     "price",
@@ -147,6 +159,7 @@ const EditPage = () => {
     "同梱バッテリー",
     "商品の重量",
   ]); // カラムのリスト
+  const [newProductURL, setNewProductURL] = useState("");
   const [showInputModal, setShowInputModal] = useState(false); // Modalコンポーネントの表示の状態を定義する
   const [sort, setSort] = useState({}); // ソートするキーと昇順or降順の状態を保持
 
@@ -218,6 +231,30 @@ const EditPage = () => {
     });
   };
 
+  // リンクから商品情報を取得
+  const productSubmit = (e) => {
+    getProductData(newProductURL);
+    e.preventDefault();
+  };
+  const getProductData = (productURL) => {
+    console.log("enter");
+    axios
+      .post(backendURL + "/edit/url", {
+        productURL: productURL,
+      })
+      .then(function (res) {
+        try {
+          setDataList([...dataList, res]);
+        } catch (e) {
+          window.alert(e);
+        }
+        setShowInputModal(false);
+      });
+  };
+  const submitClicked = () => {
+    submitRef.current.click();
+  };
+
   return (
     <>
       <MenuBar />
@@ -272,12 +309,57 @@ const EditPage = () => {
         <StartButton text={"Open with Rader"} />
       </div>
       {/* Appコンポーネントから子であるModalコンポーネントにpropsを渡す */}
-      <InputModal
+      {/* <InputModal
         showFlag={showInputModal}
         setShowModal={setShowInputModal}
-        onClicked={closeModal}
+        onClicked={getProductData}
         content="Input URL"
-      />
+      /> */}
+      {showInputModal ? ( // showFlagがtrueだったらModalを表示する
+        <div className="overlay">
+          <div
+            className="modal-content"
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+          >
+            <div className="modal-tytle">
+              <div>Input URL</div>
+            </div>
+
+            <form onSubmit={productSubmit}>
+              <div className="mb-3">
+                <input
+                  type="text"
+                  className="form-control url-input-form"
+                  placeholder="amazonの商品ページのURLを入力してください"
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    setNewProductURL(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="enter-button">
+                <button
+                  className="btn btn-primary"
+                  style={{
+                    backgroundColor: "#4d638c",
+                    color: "#d2d2d2",
+                    width: "8rem",
+                  }}
+                  onClick={submitClicked}
+                >
+                  Enter
+                </button>
+              </div>
+
+              <input hidden ref={submitRef} type="submit" value="PDFchange" />
+            </form>
+          </div>
+        </div>
+      ) : (
+        <></> // showFlagがfalseの場合はModalは表示しない
+      )}
     </>
   );
 };
