@@ -1,0 +1,120 @@
+/*タイトル*/
+.edit-title {
+  margin: 0 auto;
+  width: 8rem;
+  font-size: 20px;
+  font: bold;
+  padding-top: 20px;
+  border-bottom: 1px solid #d2d2d2;
+}
+
+.edit-title-text {
+  color: #d2d2d2;
+  text-align: center;
+}
+
+/*テーブル*/
+.data-table-wrapper {
+  text-align: center;
+  margin: 25px 50px;
+  color: #d2d2d2;
+}
+
+.data-table {
+  overflow: auto;
+  width: 100%;
+  height: 60vh;
+}
+
+.data-table table {
+  border-spacing: 0;
+  background: rgba(0, 0, 0, 0);
+}
+.data-table td {
+  white-space: nowrap;
+  border-bottom: 1px solid #999;
+  background: rgba(0, 0, 0, 0);
+  padding: 5px;
+  min-width: 100px;
+}
+
+.data-table th {
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  left: 0;
+  padding: 5px;
+}
+
+.data-table th:first-child {
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 200px;
+  min-width: 100px;
+  padding: 5px;
+}
+
+.data-table .product-title-cell {
+  border-right: 1px solid #999;
+  border-bottom: 1px solid #999;
+}
+.data-table .column-cell {
+  border-bottom: 1px solid #999;
+}
+.data-table .add-button-cell {
+  border: none;
+}
+
+.data-table tr:first-child th:first-child {
+  z-index: 1;
+}
+
+.data-table th:not(.add-button-cell) {
+  background: rgba(28, 36, 54, 1);
+}
+
+.add-button-cell {
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+}
+
+/*スクロールバーのデザイン*/
+
+.data-table::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+.data-table::-webkit-scrollbar-thumb {
+  background: #fff;
+  border-radius: 5px;
+}
+
+.data-table::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0) !important;
+}
+
+/*追加ボタンのデザイン*/
+.btn-circle {
+  width: 45px;
+  height: 45px;
+  line-height: 45px;
+  text-align: center;
+  padding: 0;
+  border-radius: 50%;
+}
+.btn-circle i {
+  position: relative;
+  top: -1px;
+}
+.btn-circle-sm {
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+  font-size: 0.9rem;
+}
+
+.button-for-rader {
+  margin: 20px;
+  text-align: right;
+}

@@ -4,6 +4,7 @@ import StartPage from './StartPage';
 import RadarChartComponent from './RadarChartPage';
 import { MyResponsiveRadar } from './N_RadarChartPage';
 
+
 class App extends Component {
   render() {
     return (
@@ -13,6 +14,7 @@ class App extends Component {
             <Route path={`/`} element={<StartPage />} />
             <Route path={`/radar/`} element={<RadarChartComponent />} />
             <Route path={`/radar2/`} element={<MyResponsiveRadar />} />
+
           </Routes>
         </BrowserRouter>
       </div>
@@ -21,3 +23,4 @@ class App extends Component {
 }
 
 export default App;
+
