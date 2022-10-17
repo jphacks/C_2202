@@ -71,7 +71,7 @@ const EditPage = () => {
   }
 
   const Cell = ({ item, index, column }) => {
-    return <td>{item}</td>;
+    return <td className="nomal-cell">{item}</td>;
   };
 
   const TableLine = ({ data, index }) => {

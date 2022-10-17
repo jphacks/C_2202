@@ -17,7 +17,6 @@
 .data-table-wrapper {
   text-align: center;
   margin: 25px 50px;
-  color: #d2d2d2;
 }
 
 .data-table {
@@ -43,6 +42,7 @@
   position: sticky;
   top: 0;
   padding: 5px;
+  color: #d2d2d2;
 }
 
 .data-table th.item-title-cell {
@@ -50,6 +50,7 @@
   position: sticky;
   left: 0;
   padding: 5px;
+  color: #d2d2d2;
 }
 
 .data-table th:first-child {
@@ -63,6 +64,9 @@
 .data-table .item-title-cell {
   border-right: 1px solid #999;
   border-bottom: 1px solid #999;
+}
+.data-table td.nomal-cell {
+  color: #d2d2d2;
 }
 .data-table .column-cell {
   border-bottom: 1px solid #999;
@@ -90,8 +94,8 @@
 /*スクロールバーのデザイン*/
 
 .data-table::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
+  width: 5px;
+  height: 5px;
 }
 
 .data-table::-webkit-scrollbar-thumb {
