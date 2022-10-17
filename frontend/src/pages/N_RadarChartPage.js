@@ -161,9 +161,11 @@ for(let i = 0; i < data.length; i++){
 const options = {
     plugins:{
         legend:{
-            position: 'right',
+            position: 'bottom',
             labels:{
                 color: "#CCFFEE",
+                usePointStyle: true,
+                boxWidth: 20,
                 font:{
                     size: 15,
                 }
@@ -213,10 +215,10 @@ const msg = (index) => {
         if(visibleIndex === index){
             const property = Object.entries(data[index]);
             property.forEach(function(v){
-                item += v.join(':');
-                item += ' ';
+                item += v.join('：');
+                item += '\n';
             });
-            return <ul className="item">{item}</ul>;
+            return <p className="item">{item}</p>;
         }
     }
     return <p className="showDetail">Show Detail</p>
@@ -225,7 +227,7 @@ const msg = (index) => {
 return(
     <div>
         <MenuBar />
-        <div className='background'>
+        <div className='container'>
         <div className="columnContainer">
             <Radar data={NewDataSet} options={options}/>
         </div>
@@ -241,10 +243,12 @@ return(
                         return(
                             <div>
                                 <p className='datatitle'>{data["title"]}</p>
-                                <button className="button" onClick={() => isVisible(index)}>
-                                    <FaGithub />
-                                </button>
-                                {msg(index)}
+                                <div className="data-container">
+                                        <button className="button" onClick={() => isVisible(index)}>
+                                            <FaGithub />
+                                        </button>
+                                        {msg(index)}
+                                    </div>
                             </div>
                         )
                     })}

@@ -1,35 +1,37 @@
 .columnContainer {
-    justify-content: flex-start;
-    width: 700px;
-    height: 600px;
-    left: 10%;
-    display: flex;
-    justify-content: flex-start;
+    width: 40%;
+    height: 40%;
+    left: 5%;
+    /* display: flex; */
+    position: sticky;
+    align-items: center;
+    flex: 1;
 }
-.background {
-    background: radial-gradient(51.08% 69.33% at 32.29% 57.71%, rgba(24, 244, 244, 0.2) 0%, rgba(0, 178, 255, 0.148958) 0.01%, rgba(40, 54, 84, 0) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */, #283654;
-    height: calc(100vh - 56px);
-    width: 100%;
-    margin: 0;
-    align-items: flex-start;
+
+body {
+    /* overflow-x: hidden; */
+    background-color: #222222;
+}
+
+.container {
+    height: 100%;
     display: flex;
 }
 
-.right {
-    display: flex;
-    justify-content: flex-end;
+.right{
+    flex: 1;
 }
+
 .p{
-    margin : 10% ;
-    width:600px;
-    text-align:center;
+    justify-content: center;
+    margin : auto ;
 }
 .textcolor{
     color: #ededed;
     margin: 3%;
 }
 .radar-title {
-  margin: 0 auto;
+  margin: 1% auto;
   width: 9em;
   font-size: 28px;
   font: bold;
@@ -42,25 +44,40 @@
 }
 
 /* ここから */
-.box{height:65%;
-    width: 40%;
-    max-height: 68%;
-    overflow: scroll;}
+.box{
+    background:skyblue;
+    height: 500px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    text-align: center;
+}
 
 
 .showDetail {
- 
+    
 }
 
 .item{
-
+    justify-content: flex-end;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
 .button {
-
+    position: sticky;
+    max-height: 30px;
+}
+.data-container{
+    display: flex;
+    margin: 10px;
 }
 
 .datatitle{
-
+    margin: 1% auto;
+    width: 12em;
+    font-size: 18px;
+    font: bold;
+    padding-top: 20px;
+    border-bottom: 1px solid #d2d2d2;
 }
 /* ここまで */
