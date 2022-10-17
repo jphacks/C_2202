@@ -31,9 +31,6 @@ app.add_middleware(
 class Body(BaseModel):
     productURL : str
 
-class DOWNLOAD(BaseModel):
-    goodsInfoJSON : str
-
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
@@ -50,8 +47,8 @@ def urlReceive(body : Body):
         return {"ERROR":"URL is wrong"}
 
 @app.post("/newdata/download/")
-def downloadCsv(download: DOWNLOAD):
-    chengeJsonToCsv(download.goodsInfoJSON)
+def downloadCsv(request):
+    chengeJsonToCsv(request)
     filePath = "./output.csv"
     return FileResponse(filePath)
 
