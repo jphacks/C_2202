@@ -216,7 +216,7 @@ const msg = (index) => {
                 item += v.join(':');
                 item += ' ';
             });
-            return <ul>{item}</ul>;
+            return <ul className="item">{item}</ul>;
         }
     }
     return <p className="showDetail">Show Detail</p>
@@ -239,8 +239,8 @@ return(
                     {dataList.map((data, index) => {
                         return(
                             <div>
-                                <p className='textcolor'>{data["title"]}</p>
-                                <button onClick={() => isVisible(index)}>
+                                <p className='datatitle'>{data["title"]}</p>
+                                <button className="button" onClick={() => isVisible(index)}>
                                     <FaGithub />
                                 </button>
                                 {msg(index)}
