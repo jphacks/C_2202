@@ -14,7 +14,6 @@ app = FastAPI()
 
 origins = [
     "http://localhost",
-    "http://localhost:8080",
     'http://localhost:8000',
     'http://localhost:3000',
     'http://localhost:3000/edit/url',
@@ -32,6 +31,9 @@ app.add_middleware(
 class Body(BaseModel):
     productURL : str
 
+class DOWNLOAD(BaseModel):
+    goodsInfoJSON : str
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
@@ -48,8 +50,8 @@ def urlReceive(body : Body):
         return {"ERROR":"URL is wrong"}
 
 @app.post("/newdata/download/")
-def downloadCsv(request):
-    chengeJsonToCsv(request)
+def downloadCsv(download: DOWNLOAD):
+    chengeJsonToCsv(download.goodsInfoJSON)
     filePath = "./output.csv"
     return FileResponse(filePath)
 
