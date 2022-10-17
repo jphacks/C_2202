@@ -236,6 +236,7 @@ return(
                             Import Datas
                         </div>
                     </div>
+                    <div className="box">
                     {dataList.map((data, index) => {
                         return(
                             <div>
@@ -247,6 +248,7 @@ return(
                             </div>
                         )
                     })}
+                    </div>
                 </div>
             </div>
         </div>
