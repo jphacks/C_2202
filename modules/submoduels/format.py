@@ -39,6 +39,14 @@ def unitFormat(s):
             return s
     return s
 
+def labelFormat(labelText, unit):
+    formattedUnit = "(" + unit + ")"
+    if (formattedUnit in labelText):
+        return labelText
+    else:
+        return labelText + formattedUnit
+
+
 def format(labelText, valueText):
     if (isNum(valueText)):
         valueText = float(valueText)
@@ -47,14 +55,14 @@ def format(labelText, valueText):
     elif (isIntUnit(valueText)):
         list = re.findall(r'(\d+)(\D+)', valueText)
         unit = unitFormat(list[0][1])
-        labelText = labelText + "(" + unit + ")"
+        labelText = labelFormat(labelText, unit)
         valueText = int(list[0][0])
         return labelText, valueText
 
     elif (isFloatUnit(valueText)):
         list = re.findall(r'(\d+\.\d+)(\D+)', valueText)
         unit = unitFormat(list[0][1])
-        labelText = labelText + "(" + unit + ")"
+        labelText = labelFormat(labelText, unit)
         valueText = float(list[0][0])
         return labelText, valueText
 
