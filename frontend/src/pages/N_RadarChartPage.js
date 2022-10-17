@@ -214,12 +214,12 @@ const msg = (index) => {
             const property = Object.entries(data[index]);
             property.forEach(function(v){
                 item += v.join(':');
-                item += ',\n';
+                item += ' ';
             });
             return <ul>{item}</ul>;
         }
     }
-    return <p>Show Detail</p>
+    return <p className="showDetail">Show Detail</p>
 }
 
 return(
