@@ -55,8 +55,8 @@
 .data-table th:first-child {
   white-space: normal;
   word-wrap: break-word;
-  max-width: 200px;
-  min-width: 100px;
+  max-width: 300px;
+  min-width: 200px;
   padding: 5px;
 }
 
