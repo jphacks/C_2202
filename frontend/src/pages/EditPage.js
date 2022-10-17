@@ -6,6 +6,7 @@ import React, {
   useRef,
 } from "react";
 import axios from "axios";
+import Draggable from "react-draggable";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "../styles/startPage.css";
@@ -16,6 +17,7 @@ import StartButton from "../components/StartButton";
 import MenuBar from "../components/MenuBar";
 import AddButton from "../components/AddButton";
 import SortButton from "../components/SortButton";
+import Loader from "../components/Loading";
 // import InputModal from "../components/InputModal";
 
 const backendURL = "http://127.0.0.1:8000";
@@ -25,6 +27,7 @@ const EditPage = () => {
   const [columnList, setColumnList] = useState([]); // カラムのリスト
   const [newProductURL, setNewProductURL] = useState("");
   const [showInputModal, setShowInputModal] = useState(false); // Modalコンポーネントの表示の状態を定義する
+  const [showLoader, setShowLoader] = useState(false); // ロードアニメーションの表示の状態を定義する
   const [sort, setSort] = useState({}); // ソートするキーと昇順or降順の状態を保持
 
   // ソートした商品の配列
@@ -101,6 +104,7 @@ const EditPage = () => {
     e.preventDefault();
   };
   const getProductData = (productURL) => {
+    setShowLoader(true);
     console.log("enter");
     console.log(productURL);
     axios
@@ -125,10 +129,12 @@ const EditPage = () => {
               newColumnList.push(newcol);
             }
           }
+          newColumnList.sort();
           setColumnList(newColumnList);
         } catch (e) {
           window.alert(e);
         }
+        setShowLoader(false);
         setShowInputModal(false);
       });
   };
@@ -148,15 +154,17 @@ const EditPage = () => {
                 <th className="column-cell item-title-cell data-header"></th>
                 {columnList.map((column, index) => {
                   return (
-                    <th className="column-cell">
-                      {column}
-                      <SortButton
-                        key={index}
-                        column={column}
-                        sort={sort}
-                        setSort={setSort}
-                      />
-                    </th>
+                    <Draggable>
+                      <th className="column-cell">
+                        {column}
+                        <SortButton
+                          key={index}
+                          column={column}
+                          sort={sort}
+                          setSort={setSort}
+                        />
+                      </th>
+                    </Draggable>
                   );
                 })}
               </tr>
@@ -237,6 +245,7 @@ const EditPage = () => {
       ) : (
         <></> // showFlagがfalseの場合はModalは表示しない
       )}
+      <Loader loaderFlag={showLoader} />
     </>
   );
 };
