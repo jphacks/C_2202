@@ -1,4 +1,3 @@
-from urllib import response
 from bs4 import BeautifulSoup
 from getGoodsInfoByUrl import getGoodsInfoByUrl
 from getPageFromAmazon import getPageFromAmazon

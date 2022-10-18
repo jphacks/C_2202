@@ -11,10 +11,11 @@ class App extends Component {
       <div className="App">
         <BrowserRouter>
           <Routes>
-            <Route path={`/`} element={<StartPage />} />
+            <Route path={`/`} element={<EditPage />} />
+            <Route path={`/edit`} element={<EditPage />} />
             <Route path={`/radar/`} element={<RadarChartComponent />} />
             <Route path={`/radar2/`} element={<MyResponsiveRadar />} />
-            <Route path={`/edit/`} element={<EditPage />} />
+
           </Routes>
         </BrowserRouter>
       </div>
