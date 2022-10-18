@@ -45,7 +45,7 @@ body {
 
 /* ここから */
 .box{
-    height: 500px;
+    height: 400px;
     overflow: hidden;
     overflow-y: auto;
     overflow-x: hidden;
@@ -60,15 +60,6 @@ body {
     justify-content: flex-end;
     white-space: pre-wrap;
     word-wrap: break-word;
-}
-
-.button {
-    position: sticky;
-    max-height: 30px;
-}
-.data-container{
-    display: flex;
-    margin: 10px;
 }
 
 .datatitle{
@@ -86,4 +77,8 @@ body {
     margin-right: auto;
     margin-bottom: 1px;
   }
+.start-button {
+    margin-top: 10%;
+    text-align: right;
+}
 /* ここまで */
