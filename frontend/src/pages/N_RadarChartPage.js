@@ -11,8 +11,6 @@ import {
     Legend,
   } from 'chart.js';
 import { Radar } from 'react-chartjs-2';
-// import { AiOutlineCaretDow } from 'react-icons/ai'
-import { FaGithub } from 'react-icons/fa'
 
 ChartJS.register(
     RadialLinearScale,
@@ -79,6 +77,54 @@ const data = [
         {
             id: 3,
             title: "z",
+            price: 3190,
+            star: 7,
+            hoge: 100,
+            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+            Brand: "HHKB",
+            メーカー: "PFU",
+            シリーズ: "HYBRID",
+            梱包サイズ: "32.2x16x5.8cm;820g",
+            電池: "2単3形電池(付属)",
+            製造元リファレンス: "PD-KB820B",
+            カラー: "Black",
+            同梱バッテリー: "はい",
+            商品の重量: "820g",
+        },{
+            id: 4,
+            title: "test",
+            price: 3190,
+            star: 7,
+            hoge: 100,
+            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+            Brand: "HHKB",
+            メーカー: "PFU",
+            シリーズ: "HYBRID",
+            梱包サイズ: "32.2x16x5.8cm;820g",
+            電池: "2単3形電池(付属)",
+            製造元リファレンス: "PD-KB820B",
+            カラー: "Black",
+            同梱バッテリー: "はい",
+            商品の重量: "820g",
+        },{
+            id: 4,
+            title: "test",
+            price: 3190,
+            star: 7,
+            hoge: 100,
+            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+            Brand: "HHKB",
+            メーカー: "PFU",
+            シリーズ: "HYBRID",
+            梱包サイズ: "32.2x16x5.8cm;820g",
+            電池: "2単3形電池(付属)",
+            製造元リファレンス: "PD-KB820B",
+            カラー: "Black",
+            同梱バッテリー: "はい",
+            商品の重量: "820g",
+        },{
+            id: 4,
+            title: "test",
             price: 3190,
             star: 7,
             hoge: 100,
@@ -194,35 +240,35 @@ const options = {
         }
       }
 };
-const [visible, setVisible] = useState(false);
-const [visibleIndex, setVisibleIndex] = useState(-1);
-const isVisible = (index) => {
-    if(visibleIndex === -1){
-        setVisible(!visible)
-        setVisibleIndex(index)
-    }else if(index === visibleIndex){
-        setVisible(!visible)
-    }else if(visible){
-        setVisibleIndex(index)
-    }else{
-        setVisibleIndex(index)
-        setVisible(!visible)
-    }
-}
-const msg = (index) => {
-    let item = []
-    if(visible){
-        if(visibleIndex === index){
-            const property = Object.entries(data[index]);
-            property.forEach(function(v){
-                item += v.join('：');
-                item += '\n';
-            });
-            return <p className="item">{item}</p>;
-        }
-    }
-    return <p className="showDetail">Show Detail</p>
-}
+// const [visible, setVisible] = useState(false);
+// const [visibleIndex, setVisibleIndex] = useState(-1);
+// const isVisible = (index) => {
+//     if(visibleIndex === -1){
+//         setVisible(!visible)
+//         setVisibleIndex(index)
+//     }else if(index === visibleIndex){
+//         setVisible(!visible)
+//     }else if(visible){
+//         setVisibleIndex(index)
+//     }else{
+//         setVisibleIndex(index)
+//         setVisible(!visible)
+//     }
+// }
+// const msg = (index) => {
+//     let item = []
+//     if(visible){
+//         if(visibleIndex === index){
+//             const property = Object.entries(data[index]);
+//             property.forEach(function(v){
+//                 item += v.join('：');
+//                 item += '\n';
+//             });
+//             return <p className="item">{item}</p>;
+//         }
+//     }
+//     return <p className="showDetail">Show Detail</p>
+// }
 
 return(
     <div>
@@ -242,12 +288,16 @@ return(
                     {dataList.map((data, index) => {
                         return(
                             <div>
-                                <p className='datatitle'>{data["title"]}</p>
+                                <div className='datatitle'>
+                                    <div className="datatitle-text">
+                                        {data["title"]}
+                                    </div>
+                                </div>
                                 <div className="data-container">
-                                        <button className="button" onClick={() => isVisible(index)}>
+                                        {/* <button className="button" onClick={() => isVisible(index)}>
                                             <FaGithub />
-                                        </button>
-                                        {msg(index)}
+                                        </button> */}
+                                        {/* {msg(index)} */}
                                     </div>
                             </div>
                         )
