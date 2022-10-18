@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from .submoduels.format import format
 
 def getGoodsInfoByUrl(response):
     soup = BeautifulSoup(response, 'html.parser')
@@ -13,17 +14,18 @@ def getGoodsInfoByUrl(response):
         price = soup.find('span', class_='a-offscreen').text
         price = price.replace('￥', '')
         price = int(price.replace(',', ''))
-    star = soup.find('span', class_='a-icon-alt').text
-    star = star.replace('5つ星のうち', '')
-    star = float(star)
+    try:
+        star = soup.find('span', class_='a-icon-alt').text
+        star = star.replace('5つ星のうち', '')
+        star = float(star)
+    except:
+        star = 0.0
     img = soup.find('div', class_="imgTagWrapper").img['data-old-hires']
 
     besicInfo['商品名'] = title
     besicInfo['価格'] = price
     besicInfo['評価'] = star
     besicInfo['画像'] = img
-
-
 
     table = soup.find('div', class_='a-expander-content a-expander-section-content a-section-expander-inner').table
 
@@ -38,6 +40,6 @@ def getGoodsInfoByUrl(response):
         valueText = valueText.replace(' ', '') 
         valueText = valueText.replace('\u200e', '') 
         valueText = valueText.replace('\n', '')
+        labelText, valueText = format(labelText, valueText)
         besicInfo[labelText] = valueText
-
     return besicInfo
