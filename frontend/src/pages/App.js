@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import StartPage from "./StartPage";
+// import StartPage from "./StartPage";
 import EditPage from "./EditPage";
 // import RadarChartComponent from "./RadarChartPage";
 // import { MyResponsiveRadar } from "./N_RadarChartPage";

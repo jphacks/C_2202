@@ -6,7 +6,7 @@ import React, {
   useRef,
 } from "react";
 import axios from "axios";
-import Draggable from "react-draggable";
+// import Draggable from "react-draggable";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "../styles/startPage.css";
@@ -18,17 +18,95 @@ import MenuBar from "../components/MenuBar";
 import AddButton from "../components/AddButton";
 import SortButton from "../components/SortButton";
 import Loader from "../components/Loading";
-// import InputModal from "../components/InputModal";
 
 const backendURL = "http://127.0.0.1:8000";
 
+const data_ = [
+  {
+    id: 0,
+    商品名: "PFUキーボードHHKBProfessionalHYBRID日本語配列/墨",
+    価格: 3100,
+    評価: 117,
+    画像: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+    Brand: "HHKB",
+    メーカー: "PFU",
+    シリーズ: "HYBRID",
+    梱包サイズ: "32.2x16x5.8cm;820g",
+    電池: "2単3形電池(付属)",
+    製造元リファレンス: "PD-KB820B",
+    カラー: "Black",
+    同梱バッテリー: "はい",
+    商品の重量: "820g",
+  },
+];
+
+const columnlist_ = [
+  "価格",
+  "評価",
+  "Brand",
+  "メーカー",
+  "シリーズ",
+  "梱包サイズ",
+  "電池",
+  "製造元リファレンス",
+  "カラー",
+  "同梱バッテリー",
+  "商品の重量",
+];
+
 const EditPage = () => {
-  const [dataList, setDataList] = useState([]); // 商品の情報のリスト
-  const [columnList, setColumnList] = useState([]); // カラムのリスト
+  const [dataList, setDataList] = useState(data_); // 商品の情報のリスト
+  const [columnList, setColumnList] = useState(columnlist_); // カラムのリスト
   const [newProductURL, setNewProductURL] = useState("");
   const [showInputModal, setShowInputModal] = useState(false); // Modalコンポーネントの表示の状態を定義する
   const [showLoader, setShowLoader] = useState(false); // ロードアニメーションの表示の状態を定義する
   const [sort, setSort] = useState({}); // ソートするキーと昇順or降順の状態を保持
+
+  const draggableColumn = useRef(null);
+
+  const dragStart = (event) => {
+    const { target } = event;
+    const id = parseInt(target.id);
+    setTimeout(() => {
+      draggableColumn.current = target;
+    }, 0);
+    setColumnList((prevState) => {
+      // prevent mutation
+      const state = prevState;
+      state.dragged = state[id];
+      return state;
+    });
+  };
+
+  const dragEnd = (event) => {
+    event.preventDefault();
+  };
+
+  const dragOver = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+  };
+
+  const dragDrop = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const { currentTarget } = event;
+    const id = parseInt(currentTarget.id);
+
+    setColumnList((prevState) => {
+      // This is to not mutate state object
+      const dragged = prevState.dragged;
+      const state = prevState.slice(0, prevState.length);
+
+      const previousId = draggableColumn.current.id;
+      if (previousId !== id) {
+        // 要素を入れ替える
+        state.splice(previousId, 1);
+        state.splice(id, 0, dragged);
+      }
+      return state;
+    });
+  };
 
   // ソートした商品の配列
   const sortedDataList = useMemo(() => {
@@ -44,13 +122,11 @@ const EditPage = () => {
         if (a > b) {
           return 1 * sort.order;
         }
-        if (a < b) {
-          return -1 * sort.order;
-        }
+        return -1 * sort.order;
       });
     }
     return _sortedDataList;
-  }, [sort]);
+  }, [sort, dataList]);
 
   // モーダルの表示
   const closeModal = useCallback(() => {
@@ -122,6 +198,7 @@ const EditPage = () => {
           let newColumnList = columnList;
           for (const newcol of Object.keys(res.data)) {
             if (
+              newcol !== "id" &&
               newcol !== "商品名" &&
               newcol !== "画像" &&
               !newColumnList.some((col) => newcol === col)
@@ -147,24 +224,31 @@ const EditPage = () => {
       </div>
 
       <div className="data-table-wrapper">
-        <div className="data-table">
+        <div className="data-table" id="dataTable">
           <table align="center">
             <thead>
               <tr>
                 <th className="column-cell item-title-cell data-header"></th>
                 {columnList.map((column, index) => {
                   return (
-                    <Draggable>
-                      <th className="column-cell">
-                        {column}
-                        <SortButton
-                          key={index}
-                          column={column}
-                          sort={sort}
-                          setSort={setSort}
-                        />
-                      </th>
-                    </Draggable>
+                    <th
+                      className="column-cell"
+                      id={index}
+                      key={index}
+                      draggable={true}
+                      onDragStart={dragStart}
+                      onDragEnd={dragEnd}
+                      onDragOver={dragOver}
+                      onDropCapture={dragDrop}
+                    >
+                      {column}
+                      <SortButton
+                        key={index}
+                        column={column}
+                        sort={sort}
+                        setSort={setSort}
+                      />
+                    </th>
                   );
                 })}
               </tr>
@@ -172,9 +256,9 @@ const EditPage = () => {
             <tbody>
               {sortedDataList.map((data, index) => {
                 return (
-                  <tr className="item-line">
+                  <tr className="item-line" key={index}>
                     <th className="item-title-cell">{data["商品名"]}</th>
-                    <TableLine data={data} index={index} key={index} />
+                    <TableLine data={data} index={index} />
                   </tr>
                 );
               })}
@@ -220,7 +304,6 @@ const EditPage = () => {
                   className="form-control url-input-form"
                   placeholder="amazonの商品ページのURLを入力してください"
                   onChange={(e) => {
-                    console.log(e.target.value);
                     setNewProductURL(e.target.value);
                   }}
                 />
