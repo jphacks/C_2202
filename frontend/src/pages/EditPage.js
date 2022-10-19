@@ -22,9 +22,42 @@ import Loader from "../components/Loading";
 
 const backendURL = "http://127.0.0.1:8000";
 
+const data_ = [
+  {
+    id: 0,
+    商品名: "PFUキーボードHHKBProfessionalHYBRID日本語配列/墨",
+    価格: 3100,
+    評価: 117,
+    画像: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+    Brand: "HHKB",
+    メーカー: "PFU",
+    シリーズ: "HYBRID",
+    梱包サイズ: "32.2x16x5.8cm;820g",
+    電池: "2単3形電池(付属)",
+    製造元リファレンス: "PD-KB820B",
+    カラー: "Black",
+    同梱バッテリー: "はい",
+    商品の重量: "820g",
+  },
+];
+
+const columnlist_ = [
+  "価格",
+  "評価",
+  "Brand",
+  "メーカー",
+  "シリーズ",
+  "梱包サイズ",
+  "電池",
+  "製造元リファレンス",
+  "カラー",
+  "同梱バッテリー",
+  "商品の重量",
+];
+
 const EditPage = () => {
-  const [dataList, setDataList] = useState([]); // 商品の情報のリスト
-  const [columnList, setColumnList] = useState([]); // カラムのリスト
+  const [dataList, setDataList] = useState(data_); // 商品の情報のリスト
+  const [columnList, setColumnList] = useState(columnlist_); // カラムのリスト
   const [newProductURL, setNewProductURL] = useState("");
   const [showInputModal, setShowInputModal] = useState(false); // Modalコンポーネントの表示の状態を定義する
   const [showLoader, setShowLoader] = useState(false); // ロードアニメーションの表示の状態を定義する
@@ -71,7 +104,23 @@ const EditPage = () => {
   }
 
   const Cell = ({ item, index, column }) => {
-    return <td>{item}</td>;
+    const chengeColor = (event) => {
+      const color = event.target.className;
+      if (color === "normal-cell") {
+        event.target.className = "red-cell";
+      } else if (color === "red-cell") {
+        event.target.className = "green-cell";
+      } else if (color === "green-cell") {
+        event.target.className = "blue-cell";
+      } else if (color === "blue-cell") {
+        event.target.className = "normal-cell";
+      }
+    };
+    return (
+      <td onClick={chengeColor} className="normal-cell">
+        {item}
+      </td>
+    );
   };
 
   const TableLine = ({ data, index }) => {
@@ -129,7 +178,6 @@ const EditPage = () => {
               newColumnList.push(newcol);
             }
           }
-          newColumnList.sort();
           setColumnList(newColumnList);
         } catch (e) {
           window.alert(e);
@@ -154,17 +202,17 @@ const EditPage = () => {
                 <th className="column-cell item-title-cell data-header"></th>
                 {columnList.map((column, index) => {
                   return (
-                    <Draggable>
-                      <th className="column-cell">
-                        {column}
-                        <SortButton
-                          key={index}
-                          column={column}
-                          sort={sort}
-                          setSort={setSort}
-                        />
-                      </th>
-                    </Draggable>
+                    // <Draggable>
+                    <th className="column-cell">
+                      {column}
+                      <SortButton
+                        key={index}
+                        column={column}
+                        sort={sort}
+                        setSort={setSort}
+                      />
+                    </th>
+                    /* </Draggable> */
                   );
                 })}
               </tr>
@@ -249,5 +297,4 @@ const EditPage = () => {
     </>
   );
 };
-
 export default EditPage;
