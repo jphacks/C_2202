@@ -6,7 +6,7 @@ import React, {
   useRef,
 } from "react";
 import axios from "axios";
-import Draggable from "react-draggable";
+// import Draggable from "react-draggable";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import "../styles/startPage.css";
@@ -18,7 +18,6 @@ import MenuBar from "../components/MenuBar";
 import AddButton from "../components/AddButton";
 import SortButton from "../components/SortButton";
 import Loader from "../components/Loading";
-// import InputModal from "../components/InputModal";
 
 const backendURL = "http://127.0.0.1:8000";
 
@@ -63,6 +62,52 @@ const EditPage = () => {
   const [showLoader, setShowLoader] = useState(false); // ロードアニメーションの表示の状態を定義する
   const [sort, setSort] = useState({}); // ソートするキーと昇順or降順の状態を保持
 
+  const draggableColumn = useRef(null);
+
+  const dragStart = (event) => {
+    const { target } = event;
+    const id = parseInt(target.id);
+    setTimeout(() => {
+      draggableColumn.current = target;
+    }, 0);
+    setColumnList((prevState) => {
+      // prevent mutation
+      const state = prevState;
+      state.dragged = state[id];
+      return state;
+    });
+  };
+
+  const dragEnd = (event) => {
+    event.preventDefault();
+  };
+
+  const dragOver = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+  };
+
+  const dragDrop = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const { currentTarget } = event;
+    const id = parseInt(currentTarget.id);
+
+    setColumnList((prevState) => {
+      // This is to not mutate state object
+      const dragged = prevState.dragged;
+      const state = prevState.slice(0, prevState.length);
+
+      const previousId = draggableColumn.current.id;
+      if (previousId !== id) {
+        // 要素を入れ替える
+        state.splice(previousId, 1);
+        state.splice(id, 0, dragged);
+      }
+      return state;
+    });
+  };
+
   // ソートした商品の配列
   const sortedDataList = useMemo(() => {
     let _sortedDataList = dataList;
@@ -77,13 +122,11 @@ const EditPage = () => {
         if (a > b) {
           return 1 * sort.order;
         }
-        if (a < b) {
-          return -1 * sort.order;
-        }
+        return -1 * sort.order;
       });
     }
     return _sortedDataList;
-  }, [sort]);
+  }, [sort, dataList]);
 
   // モーダルの表示
   const closeModal = useCallback(() => {
@@ -171,6 +214,7 @@ const EditPage = () => {
           let newColumnList = columnList;
           for (const newcol of Object.keys(res.data)) {
             if (
+              newcol !== "id" &&
               newcol !== "商品名" &&
               newcol !== "画像" &&
               !newColumnList.some((col) => newcol === col)
@@ -195,15 +239,23 @@ const EditPage = () => {
       </div>
 
       <div className="data-table-wrapper">
-        <div className="data-table">
+        <div className="data-table" id="dataTable">
           <table align="center">
             <thead>
               <tr>
                 <th className="column-cell item-title-cell data-header"></th>
                 {columnList.map((column, index) => {
                   return (
-                    // <Draggable>
-                    <th className="column-cell">
+                    <th
+                      className="column-cell"
+                      id={index}
+                      key={index}
+                      draggable={true}
+                      onDragStart={dragStart}
+                      onDragEnd={dragEnd}
+                      onDragOver={dragOver}
+                      onDropCapture={dragDrop}
+                    >
                       {column}
                       <SortButton
                         key={index}
@@ -212,7 +264,6 @@ const EditPage = () => {
                         setSort={setSort}
                       />
                     </th>
-                    /* </Draggable> */
                   );
                 })}
               </tr>
@@ -220,9 +271,9 @@ const EditPage = () => {
             <tbody>
               {sortedDataList.map((data, index) => {
                 return (
-                  <tr className="item-line">
+                  <tr className="item-line" key={index}>
                     <th className="item-title-cell">{data["商品名"]}</th>
-                    <TableLine data={data} index={index} key={index} />
+                    <TableLine data={data} index={index} />
                   </tr>
                 );
               })}
@@ -268,7 +319,6 @@ const EditPage = () => {
                   className="form-control url-input-form"
                   placeholder="amazonの商品ページのURLを入力してください"
                   onChange={(e) => {
-                    console.log(e.target.value);
                     setNewProductURL(e.target.value);
                   }}
                 />
