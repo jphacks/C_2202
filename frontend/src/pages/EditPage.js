@@ -147,7 +147,23 @@ const EditPage = () => {
   }
 
   const Cell = ({ item, index, column }) => {
-    return <td>{item}</td>;
+    const chengeColor = (event) => {
+      const color = event.target.className;
+      if (color === "normal-cell") {
+        event.target.className = "red-cell";
+      } else if (color === "red-cell") {
+        event.target.className = "green-cell";
+      } else if (color === "green-cell") {
+        event.target.className = "blue-cell";
+      } else if (color === "blue-cell") {
+        event.target.className = "normal-cell";
+      }
+    };
+    return (
+      <td onClick={chengeColor} className="normal-cell">
+        {item}
+      </td>
+    );
   };
 
   const TableLine = ({ data, index }) => {
@@ -206,7 +222,6 @@ const EditPage = () => {
               newColumnList.push(newcol);
             }
           }
-          newColumnList.sort();
           setColumnList(newColumnList);
         } catch (e) {
           window.alert(e);
@@ -332,5 +347,4 @@ const EditPage = () => {
     </>
   );
 };
-
 export default EditPage;

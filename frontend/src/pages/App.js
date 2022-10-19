@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import StartPage from "./StartPage";
-import EditPage from "./EditPage";
-// import RadarChartComponent from "./RadarChartPage";
-// import { MyResponsiveRadar } from "./N_RadarChartPage";
+import React, { Component } from 'react';
+import { BrowserRouter, Routes, Route  } from 'react-router-dom';
+import StartPage from './StartPage';
+import RadarChartComponent from './RadarChartPage';
+import { MyResponsiveRadar } from './N_RadarChartPage';
+import EditPage from './EditPage';
 
 class App extends Component {
   render() {
@@ -13,8 +13,9 @@ class App extends Component {
           <Routes>
             <Route path={`/`} element={<EditPage />} />
             <Route path={`/edit`} element={<EditPage />} />
-            {/* <Route path={`/radar/`} element={<RadarChartComponent />} />
-            <Route path={`/radar_2/`} element={<MyResponsiveRadar />} /> */}
+            <Route path={`/radar/`} element={<RadarChartComponent />} />
+            <Route path={`/radar2/`} element={<MyResponsiveRadar />} />
+
           </Routes>
         </BrowserRouter>
       </div>
@@ -23,3 +24,4 @@ class App extends Component {
 }
 
 export default App;
+
