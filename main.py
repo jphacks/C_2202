@@ -37,11 +37,10 @@ def read_root():
 
 @app.post("/edit/url/")
 def urlReceive(body : Body):
-    print(body.productURL)
     url = body.productURL
     res = getPageFromAmazon(url)
     try:
-        besicInfo = getGoodsInfoByUrl(res)
+        besicInfo = getGoodsInfoByUrl(res, url)
         return JSONResponse(besicInfo)
     except AttributeError:
         return {"ERROR":"URL is wrong"}
