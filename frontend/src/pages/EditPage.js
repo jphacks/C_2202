@@ -18,6 +18,7 @@ import MenuBar from "../components/MenuBar";
 import AddButton from "../components/AddButton";
 import SortButton from "../components/SortButton";
 import Loader from "../components/Loading";
+import MyDialog from "../components/MyDialog";
 
 const backendURL = "http://127.0.0.1:8000";
 
@@ -61,6 +62,7 @@ const EditPage = () => {
   const [showInputModal, setShowInputModal] = useState(false); // Modalコンポーネントの表示の状態を定義する
   const [showLoader, setShowLoader] = useState(false); // ロードアニメーションの表示の状態を定義する
   const [sort, setSort] = useState({}); // ソートするキーと昇順or降順の状態を保持
+  const [dialogConfig, setDialogConfig] = useState(undefined);
 
   const draggableColumn = useRef(null);
 
@@ -87,7 +89,7 @@ const EditPage = () => {
     event.preventDefault();
   };
 
-  const dragDrop = (event) => {
+  const dragDrop = async (event) => {
     // event.preventDefault();
     event.stopPropagation();
     const { currentTarget } = event;
@@ -121,29 +123,41 @@ const EditPage = () => {
 
         // 両方のカラムにデータが入っている商品が存在しないかつ､異なる型のデータが存在しないなら統合可能
         if (notBoth && !(existNumber && existString)) {
-          // カラムのリストからドラッグしてきたカラムを削除
-          setColumnList((prevState) => {
-            const dragged = prevState.dragged;
-            mergeFrom = dragged;
-            mergeTo = prevState[id];
-            const state = prevState.slice(0, prevState.length);
-            if (previousId !== id) {
-              state.splice(previousId, 1);
-            }
-            return state;
-          });
-          // データを統合
-          setDataList((prevState) => {
-            const state = prevState.slice(0, prevState.length);
-            state.map((data) => {
-              console.log(mergeTo, data[mergeTo]);
-              data[mergeTo] =
-                data[mergeTo] !== undefined ? data[mergeTo] : data[mergeFrom];
-              data[mergeFrom] = undefined;
+          const ret = await new Promise((resolve) => {
+            setDialogConfig({
+              onClose: resolve,
+              message: `${mergeFrom}
+                のデータを
+                ${mergeTo}
+                に統合します。よろしいですか？`,
             });
-            return state;
           });
-          window.alert(mergeFrom + "を" + mergeTo + "に統合しました");
+          setDialogConfig(undefined);
+          if (ret === "ok") {
+            // カラムのリストからドラッグしてきたカラムを削除
+            setColumnList((prevState) => {
+              const dragged = prevState.dragged;
+              mergeFrom = dragged;
+              mergeTo = prevState[id];
+              const state = prevState.slice(0, prevState.length);
+              if (previousId !== id) {
+                state.splice(previousId, 1);
+              }
+              return state;
+            });
+            // データを統合
+            setDataList((prevState) => {
+              const state = prevState.slice(0, prevState.length);
+              state.map((data) => {
+                console.log(mergeTo, data[mergeTo]);
+                data[mergeTo] =
+                  data[mergeTo] !== undefined ? data[mergeTo] : data[mergeFrom];
+                data[mergeFrom] = undefined;
+              });
+              return state;
+            });
+          }
+          // window.alert(mergeFrom + "を" + mergeTo + "に統合しました");
         } else {
           window.alert("統合に失敗しました");
         }
@@ -409,6 +423,7 @@ const EditPage = () => {
         <></> // showFlagがfalseの場合はModalは表示しない
       )}
       <Loader loaderFlag={showLoader} />
+      {dialogConfig && <MyDialog {...dialogConfig} />}
     </>
   );
 };
