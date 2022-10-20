@@ -171,14 +171,23 @@ const EditPage = () => {
       _sortedDataList = _sortedDataList.sort((a, b) => {
         a = a[sort.key];
         b = b[sort.key];
+        console.log(a, b);
 
         if (a === b) {
           return 0;
         }
+        if (a === undefined) {
+          return 1;
+        }
+        if (b === undefined) {
+          return -1;
+        }
         if (a > b) {
           return 1 * sort.order;
         }
-        return -1 * sort.order;
+        if (a < b) {
+          return -1 * sort.order;
+        }
       });
     }
     return _sortedDataList;
