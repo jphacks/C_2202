@@ -69,24 +69,12 @@
   color: #d2d2d2;
 }
 .data-table td.red-cell {
-  color: #d2d2d2;
-  background-color: rgba(174, 6, 6, 0.6);
+  color: #fa4b4b;
 }
 .data-table td.green-cell {
-  color: #d2d2d2;
-  background-color: rgba(6, 174, 6, 0.6);
+  color: #00ffb2;
 }
-.data-table td.blue-cell {
-  color: #d2d2d2;
-  background-color: rgba(6, 6, 174, 0.6);
-}
-/* .data-table input:checked + label {
-  background: #1a720d;
-  color: #fff;
-}
-.data-table input {
-  display: none;
-} */
+
 .data-table .column-cell {
   border-bottom: 1px solid #999;
 }
