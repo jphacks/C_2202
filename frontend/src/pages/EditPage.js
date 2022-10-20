@@ -36,7 +36,7 @@ const data_ = [
     製造元リファレンス: "PD-KB820B",
     カラー: "Black",
     同梱バッテリー: "はい",
-    商品の重量: "820g",
+    商品の重量: 820,
   },
 ];
 
@@ -88,24 +88,80 @@ const EditPage = () => {
   };
 
   const dragDrop = (event) => {
-    event.preventDefault();
+    // event.preventDefault();
     event.stopPropagation();
     const { currentTarget } = event;
     const id = parseInt(currentTarget.id);
+    const previousId = draggableColumn.current.id;
+    // ドラッグしてきたカラムとホバーしているカラムが異なる場合のみ処理する
+    if (id !== previousId) {
+      if (event.shiftKey) {
+        // シフトが押されている場合→カラムの統合
+        var mergeFrom = columnList[previousId];
+        var mergeTo = columnList[id];
 
-    setColumnList((prevState) => {
-      // This is to not mutate state object
-      const dragged = prevState.dragged;
-      const state = prevState.slice(0, prevState.length);
+        // 統合が可能かどうかを判定
+        // 両方のカラムにデータが入っているか
+        var notBoth = true;
+        // 数字のデータが存在するか
+        var existNumber = false;
+        // 文字列のデータが存在するかどうか
+        var existString = false;
+        dataList.forEach((data) => {
+          notBoth &= !(
+            data[mergeFrom] !== undefined && data[mergeTo] !== undefined
+          );
+          existNumber |=
+            typeof data[mergeFrom] === "number" ||
+            typeof data[mergeTo] === "number";
+          existString |=
+            typeof data[mergeFrom] === "string" ||
+            typeof data[mergeTo] === "string";
+        });
 
-      const previousId = draggableColumn.current.id;
-      if (previousId !== id) {
-        // 要素を入れ替える
-        state.splice(previousId, 1);
-        state.splice(id, 0, dragged);
+        // 両方のカラムにデータが入っている商品が存在しないかつ､異なる型のデータが存在しないなら統合可能
+        if (notBoth && !(existNumber && existString)) {
+          // カラムのリストからドラッグしてきたカラムを削除
+          setColumnList((prevState) => {
+            const dragged = prevState.dragged;
+            mergeFrom = dragged;
+            mergeTo = prevState[id];
+            const state = prevState.slice(0, prevState.length);
+            if (previousId !== id) {
+              state.splice(previousId, 1);
+            }
+            return state;
+          });
+          // データを統合
+          setDataList((prevState) => {
+            const state = prevState.slice(0, prevState.length);
+            state.map((data) => {
+              console.log(mergeTo, data[mergeTo]);
+              data[mergeTo] =
+                data[mergeTo] !== undefined ? data[mergeTo] : data[mergeFrom];
+              data[mergeFrom] = undefined;
+            });
+            return state;
+          });
+          window.alert(mergeFrom + "を" + mergeTo + "に統合しました");
+        } else {
+          window.alert("統合に失敗しました");
+        }
+        // setDataList((prevState) => {});
+      } else {
+        // シフトが押されてない場合→カラムの移動
+        setColumnList((prevState) => {
+          const dragged = prevState.dragged;
+          const state = prevState.slice(0, prevState.length);
+          if (previousId !== id) {
+            // 要素を入れ替える
+            state.splice(previousId, 1);
+            state.splice(id, 0, dragged);
+          }
+          return state;
+        });
       }
-      return state;
-    });
+    }
   };
 
   // ソートした商品の配列
