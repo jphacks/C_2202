@@ -217,6 +217,7 @@ const EditPage = () => {
               newcol !== "id" &&
               newcol !== "商品名" &&
               newcol !== "画像" &&
+              newcol !== "URL" &&
               !newColumnList.some((col) => newcol === col)
             ) {
               newColumnList.push(newcol);
