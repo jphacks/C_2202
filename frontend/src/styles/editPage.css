@@ -134,11 +134,6 @@
   font-size: 1.2rem;
 }
 
-.button-for-rader {
-  margin: 20px;
-  text-align: right;
-}
-
 /*ソート用のボタンのデザイン*/
 :active,
 :focus {
