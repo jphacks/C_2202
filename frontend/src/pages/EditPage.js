@@ -19,6 +19,7 @@ import AddButton from "../components/AddButton";
 import SortButton from "../components/SortButton";
 import Loader from "../components/Loading";
 import MyDialog from "../components/MyDialog";
+import MyModal from "../components/MyModal";
 
 const backendURL = "http://127.0.0.1:8000";
 
@@ -58,13 +59,14 @@ const columnlist_ = [
 const EditPage = () => {
   const [dataList, setDataList] = useState(data_); // 商品の情報のリスト
   const [columnList, setColumnList] = useState(columnlist_); // カラムのリスト
-  const [newProductURL, setNewProductURL] = useState("");
   const [showInputModal, setShowInputModal] = useState(false); // Modalコンポーネントの表示の状態を定義する
   const [showLoader, setShowLoader] = useState(false); // ロードアニメーションの表示の状態を定義する
   const [sort, setSort] = useState({}); // ソートするキーと昇順or降順の状態を保持
-  const [dialogConfig, setDialogConfig] = useState(undefined);
+  const [dialogConfig, setDialogConfig] = useState(undefined); // ダイアログボックスの要素
+  const [modalConfig, setModalConfig] = useState(undefined); // モーダルの要素
 
   const draggableColumn = useRef(null);
+  const inputRef = useRef(null);
 
   const dragStart = (event) => {
     const { target } = event;
@@ -127,9 +129,10 @@ const EditPage = () => {
             setDialogConfig({
               onClose: resolve,
               message: `${mergeFrom}
-                のデータを
+                 を 
                 ${mergeTo}
-                に統合します。よろしいですか？`,
+                 に統合します。よろしいですか？`,
+              confirm: true,
             });
           });
           setDialogConfig(undefined);
@@ -148,7 +151,7 @@ const EditPage = () => {
             // データを統合
             setDataList((prevState) => {
               const state = prevState.slice(0, prevState.length);
-              state.map((data) => {
+              state.forEach((data) => {
                 console.log(mergeTo, data[mergeTo]);
                 data[mergeTo] =
                   data[mergeTo] !== undefined ? data[mergeTo] : data[mergeFrom];
@@ -159,7 +162,16 @@ const EditPage = () => {
           }
           // window.alert(mergeFrom + "を" + mergeTo + "に統合しました");
         } else {
-          window.alert("統合に失敗しました");
+          const _ = await new Promise((resolve) => {
+            setDialogConfig({
+              onClose: resolve,
+              message: !notBoth
+                ? "データが競合するので統合できません。"
+                : "データの型が異なるので統合できません。",
+              confirm: false,
+            });
+          });
+          setDialogConfig(undefined);
         }
         // setDataList((prevState) => {});
       } else {
@@ -185,8 +197,8 @@ const EditPage = () => {
       _sortedDataList = _sortedDataList.sort((a, b) => {
         a = a[sort.key];
         b = b[sort.key];
-        console.log(a, b);
 
+        // undefinedを強制的に下にするようにソート
         if (a === b) {
           return 0;
         }
@@ -199,9 +211,8 @@ const EditPage = () => {
         if (a > b) {
           return 1 * sort.order;
         }
-        if (a < b) {
-          return -1 * sort.order;
-        }
+
+        return -1 * sort.order;
       });
     }
     return _sortedDataList;
@@ -209,7 +220,7 @@ const EditPage = () => {
 
   // モーダルの表示
   const closeModal = useCallback(() => {
-    setShowInputModal(false);
+    setModalConfig(undefined);
     document.removeEventListener("click", closeModal);
   }, []);
 
@@ -219,11 +230,24 @@ const EditPage = () => {
     };
   }, [closeModal]);
 
-  function openModal(event) {
-    setShowInputModal(true);
+  const openInputModal = (event) => {
+    setModalConfig({
+      title: "Input URL",
+      onSubmit: productSubmit,
+      URLinput: true,
+    });
     document.addEventListener("click", closeModal);
     event.stopPropagation();
-  }
+  };
+  const openUploadModal = (event) => {
+    setModalConfig({
+      title: "Upload CSV",
+      // onSubmit: productSubmit,
+      uploadFile: true,
+    });
+    document.addEventListener("click", closeModal);
+    event.stopPropagation();
+  };
 
   const Cell = ({ item, index, column }) => {
     const chengeColor = (event) => {
@@ -245,31 +269,22 @@ const EditPage = () => {
 
   const TableLine = ({ data, index }) => {
     return columnList.map((column) => {
-      if (isNaN(data[column])) {
-        return (
-          <Cell
-            index={index}
-            column={column}
-            item={data[column]}
-            key={column + index.toString()}
-          />
-        );
-      } else {
-        return (
-          <Cell
-            index={index}
-            column={column}
-            item={data[column].toLocaleString()}
-            key={column + index.toString()}
-          />
-        );
-      }
+      return (
+        <Cell
+          index={index}
+          column={column}
+          item={
+            isNaN(data[column]) ? data[column] : data[column].toLocaleString()
+          }
+          key={column + index.toString()}
+        />
+      );
     });
   };
 
   // リンクから商品情報を取得
   const productSubmit = (e) => {
-    getProductData(newProductURL);
+    getProductData(e.target[0].value);
     e.preventDefault();
   };
   const getProductData = (productURL) => {
@@ -304,8 +319,49 @@ const EditPage = () => {
           window.alert(e);
         }
         setShowLoader(false);
-        setShowInputModal(false);
+        setModalConfig(undefined);
       });
+  };
+
+  // CSVからjsonを取得
+  const CSVSubmit = (e) => {
+    getCSVtoJson(e.target.files[0]);
+    e.preventDefault();
+  };
+  const getCSVtoJson = (CSVfile) => {
+    if (!CSVfile) return;
+    setShowLoader(true);
+    console.log("enter");
+    console.log(CSVfile);
+    // axios
+    //   .post(backendURL + "/edit/url/", {
+    //     productURL: productURL,
+    //   })
+    //   .then(function (res) {
+    //     console.log(res.data);
+    //     try {
+    //       // 商品リストに追加
+    //       let dataList_ = dataList;
+    //       dataList_.push(res.data);
+    //       setDataList(dataList_);
+    //       // 新しいカラムを追加
+    //       let newColumnList = columnList;
+    //       for (const newcol of Object.keys(res.data)) {
+    //         if (
+    //           newcol !== "id" &&
+    //           newcol !== "商品名" &&
+    //           newcol !== "画像" &&
+    //           !newColumnList.some((col) => newcol === col)
+    //         ) {
+    //           newColumnList.push(newcol);
+    //         }
+    //       }
+    //       setColumnList(newColumnList);
+    //     } catch (e) {
+    //       window.alert(e);
+    //     }
+    setShowLoader(false);
+    setModalConfig(undefined);
   };
 
   return (
@@ -358,7 +414,7 @@ const EditPage = () => {
                 <th className="item-title-cell add-button-cell">
                   <AddButton
                     onClicked={(event) => {
-                      openModal(event);
+                      openInputModal(event);
                     }}
                   />
                 </th>
@@ -367,59 +423,25 @@ const EditPage = () => {
           </table>
         </div>
       </div>
-      <div className="button-for-rader">
-        <StartButton text={"Open with Rader"} />
-      </div>
-      {/* Appコンポーネントから子であるModalコンポーネントにpropsを渡す */}
-      {/* <InputModal
-        showFlag={showInputModal}
-        setShowModal={setShowInputModal}
-        onClicked={getProductData}
-        content="Input URL"
-      /> */}
-      {showInputModal ? ( // showFlagがtrueだったらModalを表示する
-        <div className="overlay">
-          <div
-            className="modal-content"
-            onClick={(event) => {
-              event.stopPropagation();
-            }}
-          >
-            <div className="modal-tytle">
-              <div>Input URL</div>
-            </div>
-
-            <form onSubmit={productSubmit}>
-              <div className="mb-3">
-                <input
-                  type="text"
-                  className="form-control url-input-form"
-                  placeholder="amazonの商品ページのURLを入力してください"
-                  onChange={(e) => {
-                    setNewProductURL(e.target.value);
-                  }}
-                />
-              </div>
-              <div className="enter-button">
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  style={{
-                    backgroundColor: "#4d638c",
-                    color: "#d2d2d2",
-                    width: "8rem",
-                  }}
-                  // onClick={submitClicked}
-                >
-                  Enter
-                </button>
-              </div>
-            </form>
-          </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginRight: "30px",
+        }}
+      >
+        <div style={{ margin: "10px 20px" }}>
+          <StartButton text={"Open with Rader"} />
         </div>
-      ) : (
-        <></> // showFlagがfalseの場合はModalは表示しない
-      )}
+        <div style={{ margin: "10px 20px" }}>
+          <StartButton
+            text={"Open CSV File"}
+            onClick={() => inputRef.current.click()}
+          />
+          <input hidden ref={inputRef} type="file" onChange={CSVSubmit} />
+        </div>
+      </div>
+      {modalConfig && <MyModal {...modalConfig} />}
       <Loader loaderFlag={showLoader} />
       {dialogConfig && <MyDialog {...dialogConfig} />}
     </>

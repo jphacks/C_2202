@@ -5,11 +5,10 @@ import {
   DialogActions,
   DialogContentText,
   Button,
-  Typography,
 } from "@mui/material";
 
 const MyDialog = (props) => {
-  const { onClose, title, message } = props;
+  const { onClose, title, message, confirm } = props;
 
   return (
     <Dialog open onClose={() => onClose("close")}>
@@ -21,9 +20,11 @@ const MyDialog = (props) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={() => onClose("ok")}>OK</Button>
-        <Button onClick={() => onClose("cancel")} autoFocus>
-          Cancel
-        </Button>
+        {confirm ? (
+          <Button onClick={() => onClose("cancel")}>Cancel</Button>
+        ) : (
+          <></>
+        )}
       </DialogActions>
     </Dialog>
   );
