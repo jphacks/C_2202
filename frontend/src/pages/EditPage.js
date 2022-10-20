@@ -150,12 +150,10 @@ const EditPage = () => {
     const chengeColor = (event) => {
       const color = event.target.className;
       if (color === "normal-cell") {
-        event.target.className = "red-cell";
-      } else if (color === "red-cell") {
         event.target.className = "green-cell";
       } else if (color === "green-cell") {
-        event.target.className = "blue-cell";
-      } else if (color === "blue-cell") {
+        event.target.className = "red-cell";
+      } else if (color === "red-cell") {
         event.target.className = "normal-cell";
       }
     };
