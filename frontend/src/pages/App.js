@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter, Routes, Route  } from 'react-router-dom';
 // import StartPage from './StartPage';
 import EditPage from './EditPage';
-import { RadarComponent } from './RadarChartPage';
+import RadarChartComponent  from './RadarChartPage';
 // import { elementType } from 'prop-types';
 class App extends Component {
   render() {
@@ -12,7 +12,7 @@ class App extends Component {
           <Routes>
             <Route path={`/`} element={<EditPage />} />
             <Route path={`/edit`} element={<EditPage />} />
-            <Route path={`/radar/`} element={<RadarComponent />} />
+            <Route path={`/radar/`} element={<RadarChartComponent />} />
           </Routes>
         </BrowserRouter>
       </div>

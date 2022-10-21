@@ -1,192 +1,184 @@
-import "../styles/radarChartPage.css"
-import MenuBar from "../components/MenuBar"
-import React, { useDebugValue, useState }  from "react";
-import { useRef } from 'react';
 import {
-    Chart as ChartJS,
     RadialLinearScale,
     PointElement,
     LineElement,
     Filler,
     Tooltip,
     Legend,
-  } from 'chart.js';
-import { Radar, getDatasetAtEvent } from 'react-chartjs-2';
+    CategoryScale,
+  } from "chart.js";
+import Chart from "chart.js/auto"
+import React, { useEffect,useState, useRef } from "react";
+import "../styles/radarChartPage.css"
+import MenuBar from "../components/MenuBar"
 import StartButton from "../components/StartButton";
+import { css } from '@emotion/css';
 
 
-ChartJS.register(
-    RadialLinearScale,
-    PointElement,
-    LineElement,
-    Filler,
-    Tooltip,
-    Legend
-  );
-
-export const RadarComponent = () => {
-    const data = [
-            {
-                id: 0,
-                title: "PFUキーボードHHKBProfessionalHYBRID日本語配列/墨",
-                price: 3100,
-                star: 117,
-                hoge: 100,
-                img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-                Brand: "HHKB",
-                メーカー: "PFU",
-                シリーズ: "HYBRID",
-                梱包サイズ: "32.2x16x5.8cm;820g",
-                電池: "2単3形電池(付属)",
-                製造元リファレンス: "PD-KB820B",
-                カラー: "Black",
-                同梱バッテリー: "はい",
-                商品の重量: "820g",
-            },
-            {
-                id: 1,
-                title: "a",
-                price: 1900,
-                star: 7,
-                hoge: 100,
-                img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-                Brand: "HHKB",
-                メーカー: "PFU",
-                シリーズ: "HYBRID",
-                梱包サイズ: "32.2x16x5.8cm;820g",
-                電池: "2単3形電池(付属)",
-                製造元リファレンス: "PD-KB820B",
-                カラー: "Black",
-                同梱バッテリー: "はい",
-                商品の重量: "820g",
-            },
-            {
-                id: 2,
-                title: "v",
-                price: 3100,
-                star: 47,
-                hoge: 100,
-                img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-                Brand: "HHKB",
-                メーカー: "PFU",
-                シリーズ: "HYBRID",
-                梱包サイズ: "32.2x16x5.8cm;820g",
-                電池: "2単3形電池(付属)",
-                製造元リファレンス: "PD-KB820B",
-                カラー: "Black",
-                同梱バッテリー: "はい",
-                商品の重量: "820g",
-            },
-            {
-                id: 3,
-                title: "z",
-                price: 3190,
-                star: 7,
-                hoge: 100,
-                img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-                Brand: "HHKB",
-                メーカー: "PFU",
-                シリーズ: "HYBRID",
-                梱包サイズ: "32.2x16x5.8cm;820g",
-                電池: "2単3形電池(付属)",
-                製造元リファレンス: "PD-KB820B",
-                カラー: "Black",
-                同梱バッテリー: "はい",
-                商品の重量: "820g",
-            },{
-                id: 4,
-                title: "test",
-                price: 3190,
-                star: 7,
-                hoge: 100,
-                img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-                Brand: "HHKB",
-                メーカー: "PFU",
-                シリーズ: "HYBRID",
-                梱包サイズ: "32.2x16x5.8cm;820g",
-                電池: "2単3形電池(付属)",
-                製造元リファレンス: "PD-KB820B",
-                カラー: "Black",
-                同梱バッテリー: "はい",
-                商品の重量: "820g",
-            },{
-                id: 4,
-                title: "test",
-                price: 3190,
-                star: 7,
-                hoge: 100,
-                img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-                Brand: "HHKB",
-                メーカー: "PFU",
-                シリーズ: "HYBRID",
-                梱包サイズ: "32.2x16x5.8cm;820g",
-                電池: "2単3形電池(付属)",
-                製造元リファレンス: "PD-KB820B",
-                カラー: "Black",
-                同梱バッテリー: "はい",
-                商品の重量: "820g",
-            },{
-                id: 4,
-                title: "test",
-                price: 3190,
-                star: 7,
-                hoge: 100,
-                img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-                Brand: "HHKB",
-                メーカー: "PFU",
-                シリーズ: "HYBRID",
-                梱包サイズ: "32.2x16x5.8cm;820g",
-                電池: "2単3形電池(付属)",
-                製造元リファレンス: "PD-KB820B",
-                カラー: "Black",
-                同梱バッテリー: "はい",
-                商品の重量: "820g",
-            },{
-                id: 4,
-                title: "test",
-                price: 3190,
-                star: 7,
-                hoge: 100,
-                img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-                Brand: "HHKB",
-                メーカー: "PFU",
-                シリーズ: "HYBRID",
-                梱包サイズ: "32.2x16x5.8cm;820g",
-                電池: "2単3形電池(付属)",
-                製造元リファレンス: "PD-KB820B",
-                カラー: "Black",
-                同梱バッテリー: "はい",
-                商品の重量: "820g",
-            },{
-                id: 4,
-                title: "test",
-                price: 3190,
-                star: 7,
-                hoge: 100,
-                img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-                Brand: "HHKB",
-                メーカー: "PFU",
-                シリーズ: "HYBRID",
-                梱包サイズ: "32.2x16x5.8cm;820g",
-                電池: "2単3形電池(付属)",
-                製造元リファレンス: "PD-KB820B",
-                カラー: "Black",
-                同梱バッテリー: "はい",
-                商品の重量: "820g",
-            }
+const RadarChartComponent = () => {
+    const testData = [
+        {
+            id: 0,
+            title: "PFUキーボードHHKBProfessionalHYBRID日本語配列/墨",
+            price: 3100,
+            star: 117,
+            hoge: 100,
+            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+            Brand: "HHKB",
+            メーカー: "PFU",
+            シリーズ: "HYBRID",
+            梱包サイズ: "32.2x16x5.8cm;820g",
+            電池: "2単3形電池(付属)",
+            製造元リファレンス: "PD-KB820B",
+            カラー: "Black",
+            同梱バッテリー: "はい",
+            商品の重量: "820g",
+        },
+        {
+            id: 1,
+            title: "a",
+            price: 1900,
+            star: 7,
+            hoge: 100,
+            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+            Brand: "HHKB",
+            メーカー: "PFU",
+            シリーズ: "HYBRID",
+            梱包サイズ: "32.2x16x5.8cm;820g",
+            電池: "2単3形電池(付属)",
+            製造元リファレンス: "PD-KB820B",
+            カラー: "Black",
+            同梱バッテリー: "はい",
+            商品の重量: "820g",
+        },
+        {
+            id: 2,
+            title: "v",
+            price: 3100,
+            star: 47,
+            hoge: 100,
+            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+            Brand: "HHKB",
+            メーカー: "PFU",
+            シリーズ: "HYBRID",
+            梱包サイズ: "32.2x16x5.8cm;820g",
+            電池: "2単3形電池(付属)",
+            製造元リファレンス: "PD-KB820B",
+            カラー: "Black",
+            同梱バッテリー: "はい",
+            商品の重量: "820g",
+        },
+        {
+            id: 3,
+            title: "z",
+            price: 3190,
+            star: 7,
+            hoge: 100,
+            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+            Brand: "HHKB",
+            メーカー: "PFU",
+            シリーズ: "HYBRID",
+            梱包サイズ: "32.2x16x5.8cm;820g",
+            電池: "2単3形電池(付属)",
+            製造元リファレンス: "PD-KB820B",
+            カラー: "Black",
+            同梱バッテリー: "はい",
+            商品の重量: "820g",
+        },{
+            id: 4,
+            title: "test",
+            price: 3190,
+            star: 7,
+            hoge: 100,
+            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+            Brand: "HHKB",
+            メーカー: "PFU",
+            シリーズ: "HYBRID",
+            梱包サイズ: "32.2x16x5.8cm;820g",
+            電池: "2単3形電池(付属)",
+            製造元リファレンス: "PD-KB820B",
+            カラー: "Black",
+            同梱バッテリー: "はい",
+            商品の重量: "820g",
+        },{
+            id: 4,
+            title: "test",
+            price: 3190,
+            star: 7,
+            hoge: 100,
+            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+            Brand: "HHKB",
+            メーカー: "PFU",
+            シリーズ: "HYBRID",
+            梱包サイズ: "32.2x16x5.8cm;820g",
+            電池: "2単3形電池(付属)",
+            製造元リファレンス: "PD-KB820B",
+            カラー: "Black",
+            同梱バッテリー: "はい",
+            商品の重量: "820g",
+        },{
+            id: 4,
+            title: "test",
+            price: 3190,
+            star: 7,
+            hoge: 100,
+            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+            Brand: "HHKB",
+            メーカー: "PFU",
+            シリーズ: "HYBRID",
+            梱包サイズ: "32.2x16x5.8cm;820g",
+            電池: "2単3形電池(付属)",
+            製造元リファレンス: "PD-KB820B",
+            カラー: "Black",
+            同梱バッテリー: "はい",
+            商品の重量: "820g",
+        },{
+            id: 4,
+            title: "test",
+            price: 3190,
+            star: 7,
+            hoge: 100,
+            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+            Brand: "HHKB",
+            メーカー: "PFU",
+            シリーズ: "HYBRID",
+            梱包サイズ: "32.2x16x5.8cm;820g",
+            電池: "2単3形電池(付属)",
+            製造元リファレンス: "PD-KB820B",
+            カラー: "Black",
+            同梱バッテリー: "はい",
+            商品の重量: "820g",
+        },{
+            id: 4,
+            title: "test",
+            price: 3190,
+            star: 7,
+            hoge: 100,
+            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+            Brand: "HHKB",
+            メーカー: "PFU",
+            シリーズ: "HYBRID",
+            梱包サイズ: "32.2x16x5.8cm;820g",
+            電池: "2単3形電池(付属)",
+            製造元リファレンス: "PD-KB820B",
+            カラー: "Black",
+            同梱バッテリー: "はい",
+            商品の重量: "820g",
+        }
     ];
     let columnList = []
     let valueList = []
     let dataList = []
     let isFirst = true
-    const [dataSet,setDataSet] = useState({
-        labels: columnList,
-        datasets: [],
-    })
+    const data = {
+            labels: columnList,
+            datasets: []
+    }
     const [showImportCSV, setShowImportCSV] = useState(false); // Modalコンポーネントの表示の状態を定義する
     const [image, setImage] = useState()
     const [errorMessage, setErrorMessage] = useState('')
     const URL = 'http://127.0.0.1:8000/images/' //適宜設定
+    let [chart,setChart] = useState({})
 
     const randomColor = () => {
         const r = Math.round(Math.random() * 255);
@@ -195,7 +187,7 @@ export const RadarComponent = () => {
         return `rgb(${r},${g},${b}`
     }
 
-    for(var i = 0; i < data.length; i++){
+    for(var i = 0; i < testData.length; i++){
         dataList.push(new Object())
         valueList.push(new Array())
     }
@@ -207,7 +199,7 @@ export const RadarComponent = () => {
         }
 
         if(!isNaN(value) && key !== "id"){
-            const uniqueKey = data.map(function (p) {
+            const uniqueKey = testData.map(function (p) {
                 return p[key];
             });
             const maxValue = Math.max.apply(null, uniqueKey)
@@ -221,34 +213,34 @@ export const RadarComponent = () => {
         }
     }
 
-    for (const i in data){
+    for (const i in testData){
         if(isFirst === true){
-            for (const key in data[i]){
-                addColumn(key,data[i][key])
+            for (const key in testData[i]){
+                addColumn(key,testData[i][key])
             }
             isFirst = false
         }
-        for (const key in data[i]){
-            addData(key,data[i][key],i)
+        for (const key in testData[i]){
+            addData(key,testData[i][key],i)
         }
     }
 
-    for(let i = 0; i < data.length; i++){
-        dataSet.datasets.push(new Object())
-        dataSet.datasets[i].hidden = true
-        dataSet.datasets[i].label = valueList[i][0]
-        dataSet.datasets[i].data = []
+    for(let i = 0; i < testData.length; i++){
+        data.datasets.push(new Object())
+        data.datasets[i].hidden = true
+        data.datasets[i].label = valueList[i][0]
+        data.datasets[i].data = []
         for (let j = 0; j < valueList[i].length - 1; j++){
-            dataSet.datasets[i].data.push(valueList[i][j+1])
+            data.datasets[i].data.push(valueList[i][j+1])
         }
         const color = `${randomColor()}`
-        dataSet.datasets[i].backgroundColor = `${color},0.3)`
-        dataSet.datasets[i].borderColor = `${color},1)`
-        dataSet.datasets[i].borderWidth = 1
-        dataSet.datasets[i].pointBackgroundColor = `${color})`
-        dataSet.datasets[i].pointBorderColor = '#fff'
-        dataSet.datasets[i].pointHoverBackgroundColor = '#fff'
-        dataSet.datasets[i].pointHoverBorderColor = `${color})`
+        data.datasets[i].backgroundColor = `${color},0.3)`
+        data.datasets[i].borderColor = `${color},1)`
+        data.datasets[i].borderWidth = 1
+        data.datasets[i].pointBackgroundColor = `${color})`
+        data.datasets[i].pointBorderColor = '#fff'
+        data.datasets[i].pointHoverBackgroundColor = '#fff'
+        data.datasets[i].pointHoverBorderColor = `${color})`
     }
 
     const getImage = (e) => {
@@ -270,11 +262,15 @@ export const RadarComponent = () => {
         e.preventDefault()
         Submit()
     }
+    const OutputCSV = () => {
+        console.log("CSV出力をする")
+        setShowImportCSV(true);
+    }
 
-    
     const options = {
         plugins:{
             legend:{
+                
                 position: 'bottom',
                 labels:{
                     color: "#CCFFEE",
@@ -309,95 +305,109 @@ export const RadarComponent = () => {
         }
     };
 
-    //const myChart = new ChartJS(dataSet,options)
+    const Radar = () => {
+        const canvasRef = useRef(null);
+        useEffect(() => {
+            const element = canvasRef.current;
+            console.log(element)
+            if (!element) return;
+            Chart.register(
+                RadialLinearScale,
+                PointElement,
+                LineElement,
+                Filler,
+                Tooltip,
+                Legend
+            );
+            chart = new Chart(element, {type: 'radar',data,options});
+            return () => chart.destroy();
+        });
+        return <canvas ref={canvasRef} />;
+    };
 
-    const OutputCSV = () => {
-        console.log("CSV出力をする")
-        setShowImportCSV(true);
+    const hiddenData = (index) => {
+        if(chart.data.datasets[index].hidden === true){
+            chart.data.datasets[index].hidden = false
+            setButtonStyle("radar-janome-after")
+        }else if(chart.data.datasets[index].hidden === false){
+            chart.data.datasets[index].hidden = true
+            setButtonStyle("radar-janome")
+        }else {}
+        chart.update()
     }
-    const chartRef = useRef();
-    const hiddenData = () => {
-        console.log(getDatasetAtEvent(chartRef.current));
-        const chart = Radar.getChart()
-        console.log(chart)
-        let prevData = dataSet
-        console.log(prevData)
-        prevData.datasets[0].hidden = true
-        setDataSet(prevData)
-        //myChart.update()
-        console.log(dataSet)
-    }
-
-    return(
+    
+    const [buttonstyle,setButtonStyle] = useState("radar-janome")
+    
+    return (
         <div>
-            <MenuBar />
-            <div className='radar-container'>
-                <div className="radar-columnContainer">
-                    <Radar 
-                        data={dataSet} 
-                        options={options}
-                    />
-                </div>
-                <div className='radar-p'>
-                    <div className='radar-title'>
-                        <div className='radar-title-text'>
-                            Import Datas
-                        </div>
+        <MenuBar />
+        <div className='radar-container'>
+            <div className="radar-columnContainer">
+                <Radar />
+            </div>
+            
+            <div className='radar-p'>
+                <div className='radar-title'>
+                    <div className='radar-title-text'>
+                        Import Datas
                     </div>
-                    <div className="radar-box">
-                    {dataList.map((data, index) => {
-                        return(
-                            <div>
-                                <div className='radar-datatitle'>
-                                    <div className="radar-datatitle-text">
-                                        {data["title"]}
-                                    </div>
+                </div>
+                <div className="radar-box">
+                {dataList.map((data, index) => {
+                    return(
+                        <div>
+                            <div className='radar-data'>
+                            <button className={buttonstyle} onClick={() => hiddenData(index)} />
+                                <div className="radar-datatitle-text">
+                                    {data["title"]}
                                 </div>
                             </div>
-                        )
-                    })}
-                    </div>
-                    <StartButton text={"hidden"} buttonClick={hiddenData} />
-                    <div className="radar-start-button">
-                        <StartButton text={"Output CSV"} buttonClick={OutputCSV} />
-                    </div>
+                        </div>
+                    )
+                })}
+                </div>
+                <div className="radar-start-button">
+                    <StartButton text={"Output CSV"} buttonClick={OutputCSV} />
                 </div>
             </div>
-            {showImportCSV ? ( // showFlagがtrueだったらModalを表示する
-            <div className="overlay">
-            <div
-                className="modal-content"
-                onClick={(event) => {
-                event.stopPropagation();
+        </div>
+        {showImportCSV ? ( // showFlagがtrueだったらModalを表示する
+        <div className="overlay">
+        <div
+            className="modal-content"
+            onClick={(event) => {
+            event.stopPropagation();
+            }}
+        >
+            <div className="mb-3">
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <input id="img" type="file" accept="image/*,.png,.jpg,.jpeg,.gif" onChange={getImage}/>
+                </div>
+            </form>
+            <br/>
+            <button className="button is-primary" type="submit">Submit</button> 
+            </div>
+            <div className="enter-button">
+            <button
+                className="btn btn-primary"
+                style={{
+                backgroundColor: "#4d638c",
+                color: "#d2d2d2",
+                width: "8rem",
                 }}
+                // onClick={props.onClicked}
             >
-                <div className="mb-3">
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <input id="img" type="file" accept="image/*,.png,.jpg,.jpeg,.gif" onChange={getImage}/>
-                    </div>
-                </form>
-                <br/>
-                <button className="button is-primary" type="submit">Submit</button> 
-                </div>
-                <div className="enter-button">
-                <button
-                    className="btn btn-primary"
-                    style={{
-                    backgroundColor: "#4d638c",
-                    color: "#d2d2d2",
-                    width: "8rem",
-                    }}
-                    // onClick={props.onClicked}
-                >
-                    Enter
-                </button>
-                </div>
+                Enter
+            </button>
             </div>
-            </div>
-        ) : (
-            <></> // showFlagがfalseの場合はModalは表示しない
-        )}
-        </div>    
-    )
-}
+        </div>
+        </div>
+    ) : (
+        <></> // showFlagがfalseの場合はModalは表示しない
+    )}
+    </div>   
+    );
+  }
+
+  export default RadarChartComponent
