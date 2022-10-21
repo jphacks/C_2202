@@ -65,6 +65,7 @@
   border-right: 1px solid #999;
   border-bottom: 1px solid #999;
 }
+.item-title-cell a{color: #d2d2d2;}
 .data-table td.normal-cell {
   color: #d2d2d2;
 }
