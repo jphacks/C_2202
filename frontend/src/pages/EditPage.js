@@ -37,6 +37,7 @@ const data_ = [
     カラー: "Black",
     同梱バッテリー: "はい",
     商品の重量: "820g",
+    URL:"https://www.amazon.co.jp/HHKB-Professional-HYBRID-%E6%97%A5%E6%9C%AC%E8%AA%9E%E9%85%8D%E5%88%97%EF%BC%8F%E5%A2%A8/dp/B082TZPCGJ"
   },
 ];
 
@@ -273,7 +274,7 @@ const EditPage = () => {
               {sortedDataList.map((data, index) => {
                 return (
                   <tr className="item-line" key={index}>
-                    <th className="item-title-cell">{data["商品名"]}</th>
+                    <th className="item-title-cell" ><a href={data["URL"]} target="_blank">{data["商品名"]}</a></th>
                     <TableLine data={data} index={index} />
                   </tr>
                 );
