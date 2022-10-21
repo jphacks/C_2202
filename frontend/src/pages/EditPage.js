@@ -56,10 +56,38 @@ const columnlist_ = [
   "商品の重量",
 ];
 
+// 配列をlocalStorageで保管するときはjsonにする必要がある
+const SetArray = (arr, key) => {
+  if (window.localStorage) {
+    let json = JSON.stringify(arr, undefined, 1);
+    console.log(json);
+    localStorage.setItem(key, json);
+  }
+};
+
+// 取得するときはjsonを配列に戻す
+const GetArray = (key) => {
+  if (window.localStorage) {
+    let json = localStorage.getItem(key);
+    if (json) {
+      let array = JSON.parse(json);
+      return array;
+    }
+    return json;
+  }
+  return null;
+};
+
 const EditPage = () => {
-  const [dataList, setDataList] = useState(data_); // 商品の情報のリスト
-  const [columnList, setColumnList] = useState(columnlist_); // カラムのリスト
-  const [showInputModal, setShowInputModal] = useState(false); // Modalコンポーネントの表示の状態を定義する
+  // localStorageからデータを取得
+  const storedDataList = GetArray("Data");
+  const storedColumnList = GetArray("Column");
+  const [dataList, setDataList] = useState(
+    storedDataList ? storedDataList : []
+  ); // 商品の情報のリスト
+  const [columnList, setColumnList] = useState(
+    storedColumnList ? storedColumnList : []
+  ); // カラムのリスト
   const [showLoader, setShowLoader] = useState(false); // ロードアニメーションの表示の状態を定義する
   const [sort, setSort] = useState({}); // ソートするキーと昇順or降順の状態を保持
   const [dialogConfig, setDialogConfig] = useState(undefined); // ダイアログボックスの要素
@@ -146,8 +174,10 @@ const EditPage = () => {
               if (previousId !== id) {
                 state.splice(previousId, 1);
               }
+              SetArray(state, "Column");
               return state;
             });
+
             // データを統合
             setDataList((prevState) => {
               const state = prevState.slice(0, prevState.length);
@@ -157,6 +187,7 @@ const EditPage = () => {
                   data[mergeTo] !== undefined ? data[mergeTo] : data[mergeFrom];
                 data[mergeFrom] = undefined;
               });
+              SetArray(state, "Data");
               return state;
             });
           }
@@ -184,6 +215,7 @@ const EditPage = () => {
             state.splice(previousId, 1);
             state.splice(id, 0, dragged);
           }
+          SetArray(state, "Column");
           return state;
         });
       }
@@ -239,15 +271,6 @@ const EditPage = () => {
     document.addEventListener("click", closeModal);
     event.stopPropagation();
   };
-  const openUploadModal = (event) => {
-    setModalConfig({
-      title: "Upload CSV",
-      // onSubmit: productSubmit,
-      uploadFile: true,
-    });
-    document.addEventListener("click", closeModal);
-    event.stopPropagation();
-  };
 
   const Cell = ({ item, index, column }) => {
     const chengeColor = (event) => {
@@ -299,9 +322,10 @@ const EditPage = () => {
         console.log(res.data);
         try {
           // 商品リストに追加
-          let dataList_ = dataList;
-          dataList_.push(res.data);
-          setDataList(dataList_);
+          let newDataList = dataList;
+          dataList.push(res.data);
+          setDataList(newDataList);
+          SetArray(newDataList, "Data");
           // 新しいカラムを追加
           let newColumnList = columnList;
           for (const newcol of Object.keys(res.data)) {
@@ -315,6 +339,7 @@ const EditPage = () => {
             }
           }
           setColumnList(newColumnList);
+          SetArray(newColumnList, "Column");
         } catch (e) {
           window.alert(e);
         }
