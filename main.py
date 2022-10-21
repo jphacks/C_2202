@@ -1,5 +1,6 @@
 import csv
 import shutil
+import base64
 from fastapi import FastAPI, File, HTTPException, UploadFile, status
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -31,6 +32,9 @@ app.add_middleware(
 class Body(BaseModel):
     productURL : str
 
+class Data(BaseModel):
+    dataList: list
+
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
@@ -46,10 +50,13 @@ def urlReceive(body : Body):
         return {"ERROR":"URL is wrong"}
 
 @app.post("/newdata/download/")
-def downloadCsv(request):
-    chengeJsonToCsv(request)
+def downloadCsv(data : Data):
+    chengeJsonToCsv(data.dataList)
     filePath = "./output.csv"
-    return FileResponse(filePath)
+    print("filePath: " + filePath)
+    with open(filePath, "rb") as f:
+        data = base64.b64encode(f.read())
+    return data
 
 @app.post("/newdata/upload/")
 def upload_file(upload_file: UploadFile = File(...)):
