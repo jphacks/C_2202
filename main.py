@@ -77,10 +77,10 @@ def upload_file(upload_file: UploadFile = File(...)):
     finally:
         upload_file.file.close()
     list = []
-    dict = {}
     with open(tmp_path, "r", encoding="utf-8_sig") as f:
         reader = csv.DictReader(f)
         for row in reader:
+            dict = {}
             for k, v in row.items():
                 if k == "":
                     print("enpty column")
