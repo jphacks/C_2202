@@ -1,6 +1,5 @@
 /*タイトル*/
 .edit-title {
-  margin: 0 auto;
   width: 8rem;
   font-size: 20px;
   font: bold;
@@ -17,13 +16,12 @@
 .data-table-wrapper {
   text-align: center;
   margin: 25px 50px;
-  color: #d2d2d2;
 }
 
 .data-table {
   overflow: auto;
   width: 100%;
-  height: 60vh;
+  height: 70vh;
 }
 
 .data-table table {
@@ -43,6 +41,7 @@
   position: sticky;
   top: 0;
   padding: 5px;
+  color: #d2d2d2;
 }
 
 .data-table th.item-title-cell {
@@ -50,6 +49,7 @@
   position: sticky;
   left: 0;
   padding: 5px;
+  color: #d2d2d2;
 }
 
 .data-table th:first-child {
@@ -64,6 +64,19 @@
   border-right: 1px solid #999;
   border-bottom: 1px solid #999;
 }
+.item-title-cell a {
+  color: #d2d2d2;
+}
+.data-table td.normal-cell {
+  color: #d2d2d2;
+}
+.data-table td.red-cell {
+  color: #fa4b4b;
+}
+.data-table td.green-cell {
+  color: #00ffb2;
+}
+
 .data-table .column-cell {
   border-bottom: 1px solid #999;
 }
@@ -90,8 +103,8 @@
 /*スクロールバーのデザイン*/
 
 .data-table::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
+  width: 5px;
+  height: 5px;
 }
 
 .data-table::-webkit-scrollbar-thumb {
@@ -121,11 +134,6 @@
   height: 35px;
   line-height: 35px;
   font-size: 1.2rem;
-}
-
-.button-for-rader {
-  margin: 20px;
-  text-align: right;
 }
 
 /*ソート用のボタンのデザイン*/
@@ -169,4 +177,36 @@
 .sort-buttons button.active.desc:after {
   top: calc(50% - 5px);
   transform: rotate(135deg);
+}
+
+.box-wrapper {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.edit-box {
+  width: 6rem;
+  height: 3.5rem;
+  vertical-align: middle;
+  color: #d2d2d2; /*文字色*/
+  background: #4d638c;
+  border: solid 3px #6091d3; /*線*/
+  border-radius: 10px; /*角の丸み*/
+  font-size: large;
+  line-height: 1rem;
+  position: absolute;
+  right: 0;
+  margin-top: 1.5rem;
+  margin-right: 50px;
+}
+
+.green-explain {
+  color: #00ffb2;
+}
+
+.red-explain {
+  color: #fa4b4b;
 }

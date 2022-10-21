@@ -1,10 +1,10 @@
 from bs4 import BeautifulSoup
 from .submoduels.format import format
 
-def getGoodsInfoByUrl(response):
+def getGoodsInfoByUrl(response, url):
     soup = BeautifulSoup(response, 'html.parser')
     besicInfo = {}
-
+    url = url
     title = soup.find('span', class_='a-size-large product-title-word-break').text
     title = title.replace(' ', '')
     try:
@@ -23,6 +23,7 @@ def getGoodsInfoByUrl(response):
     img = soup.find('div', class_="imgTagWrapper").img['data-old-hires']
 
     besicInfo['商品名'] = title
+    besicInfo['URL'] = url
     besicInfo['価格'] = price
     besicInfo['評価'] = star
     besicInfo['画像'] = img

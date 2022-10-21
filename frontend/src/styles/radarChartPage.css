@@ -1,3 +1,4 @@
+
 .radar-columnContainer {
     align-items: center;
     width: 40%;
@@ -26,6 +27,7 @@ body {
 .radar-textcolor{
     color: #ededed;
     margin: 3%;
+
 }
 .radar-title {
   margin: 1% auto;
@@ -33,7 +35,7 @@ body {
   font-size: 28px;
   font: bold;
   padding-top: 20px;
-  border-bottom: 1px solid #CCFFEE;
+  border-bottom: 1px solid #ccffee;
 }
 .radar-title-text {
   color: #d2d2d2;
@@ -80,6 +82,7 @@ body {
 .radar-start-button {
     margin-top: 10%;
     text-align: right;
+
 }
 
 .radar-radis {
