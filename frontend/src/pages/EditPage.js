@@ -326,35 +326,35 @@ const EditPage = () => {
     setShowLoader(true);
     console.log("enter");
     console.log(CSVfile);
-    // axios
-    //   .post(backendURL + "/edit/url/", {
-    //     productURL: productURL,
-    //   })
-    //   .then(function (res) {
-    //     console.log(res.data);
-    //     try {
-    //       // 商品リストに追加
-    //       let dataList_ = dataList;
-    //       dataList_.push(res.data);
-    //       setDataList(dataList_);
-    //       // 新しいカラムを追加
-    //       let newColumnList = columnList;
-    //       for (const newcol of Object.keys(res.data)) {
-    //         if (
-    //           newcol !== "id" &&
-    //           newcol !== "商品名" &&
-    //           newcol !== "画像" &&
-    //           !newColumnList.some((col) => newcol === col)
-    //         ) {
-    //           newColumnList.push(newcol);
-    //         }
-    //       }
-    //       setColumnList(newColumnList);
-    //     } catch (e) {
-    //       window.alert(e);
-    //     }
-    setShowLoader(false);
-    setModalConfig(undefined);
+    axios
+      .post(backendURL + "/newdata/upload/", {
+        file: CSVfile,
+      })
+      .then(function (res) {
+        console.log(res.data);
+        try {
+          // 商品リストに追加
+          let dataList_ = dataList;
+          dataList_.concat(res.data);
+          setDataList(dataList_);
+          // 新しいカラムを追加
+          let newColumnList = columnList;
+          for (const newcol of Object.keys(res.data[0])) {
+            if (
+              newcol !== "id" &&
+              newcol !== "商品名" &&
+              newcol !== "画像" &&
+              !newColumnList.some((col) => newcol === col)
+            ) {
+              newColumnList.push(newcol);
+            }
+          }
+          setColumnList(newColumnList);
+        } catch (e) {
+          window.alert(e);
+        }
+        setShowLoader(false);
+      });
   };
 
   return (
@@ -404,7 +404,7 @@ const EditPage = () => {
                 return (
                   <tr className="item-line" key={index}>
                     <th className="item-title-cell">
-                      <a href={data["URL"]} target="_blank">
+                      <a href={data["URL"]} target="_blank" rel="noreferrer">
                         {data["商品名"]}
                       </a>
                     </th>
