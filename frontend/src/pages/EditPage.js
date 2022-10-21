@@ -23,40 +23,6 @@ import MyModal from "../components/MyModal";
 
 const backendURL = "http://127.0.0.1:8000";
 
-const data_ = [
-  {
-    id: 0,
-    商品名: "PFUキーボードHHKBProfessionalHYBRID日本語配列/墨",
-    価格: 3100,
-    評価: 117,
-    画像: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-    Brand: "HHKB",
-    メーカー: "PFU",
-    シリーズ: "HYBRID",
-    梱包サイズ: "32.2x16x5.8cm;820g",
-    電池: "2単3形電池(付属)",
-    製造元リファレンス: "PD-KB820B",
-    カラー: "Black",
-    同梱バッテリー: "はい",
-    商品の重量: 820,
-    URL: "https://www.amazon.co.jp/HHKB-Professional-HYBRID-%E6%97%A5%E6%9C%AC%E8%AA%9E%E9%85%8D%E5%88%97%EF%BC%8F%E5%A2%A8/dp/B082TZPCGJ",
-  },
-];
-
-const columnlist_ = [
-  "価格",
-  "評価",
-  "Brand",
-  "メーカー",
-  "シリーズ",
-  "梱包サイズ",
-  "電池",
-  "製造元リファレンス",
-  "カラー",
-  "同梱バッテリー",
-  "商品の重量",
-];
-
 // 配列をlocalStorageで保管するときはjsonにする必要がある
 const SetArray = (arr, key) => {
   if (window.localStorage) {
@@ -393,11 +359,16 @@ const EditPage = () => {
 
   return (
     <>
-      <MenuBar />
-      <div className="edit-title">
-        <div className="edit-title-text">Edit Page</div>
+      {/* <MenuBar /> */}
+      <div class="box-wrapper">
+        <div className="edit-title">
+          <div className="edit-title-text">Edit Page</div>
+        </div>
+        <div class="edit-box">
+          <p className="green-explain">● GOOD</p>
+          <p className="red-explain">● BAD</p>
+        </div>
       </div>
-
       <div className="data-table-wrapper">
         <div className="data-table" id="dataTable">
           <table align="center">
