@@ -176,7 +176,7 @@ const RadarChartComponent = () => {
     const [image, setImage] = useState()
     const [errorMessage, setErrorMessage] = useState('')
     const URL = 'http://127.0.0.1:8000/images/' //適宜設定
-    let chart = {}
+    let [chart,setChart] = useState({})
 
     const randomColor = () => {
         const r = Math.round(Math.random() * 255);
@@ -268,7 +268,7 @@ const RadarChartComponent = () => {
     const options = {
         plugins:{
             legend:{
-                
+                onClick: function(){ return false; },
                 position: 'bottom',
                 labels:{
                     color: "#CCFFEE",
@@ -324,13 +324,16 @@ const RadarChartComponent = () => {
     };
 
     const hiddenData = (index) => {
+        console.log("クリック")
+        console.log(chart.data.datasets[index].hidden)
         if(chart.data.datasets[index].hidden === true){
+            console.log("true")
             chart.data.datasets[index].hidden = false
-            chart.update()
         }else if(chart.data.datasets[index].hidden === false){
-            chart.data.datasets[index].hidden = true
-            chart.update()
+            console.log("false")
+            chart.data.datasets[index].hidden = true    
         }else {}
+        chart.update()
     }
     
     return (
@@ -352,9 +355,7 @@ const RadarChartComponent = () => {
                     return(
                         <div>
                             <div className='radar-data'>
-                            <button className="radar-janome" onClick={() => {
-                                hiddenData(index) 
-                            }} />
+                            <button className="radar-janome" onClick={() => hiddenData(index) } />
                                 <div className="radar-datatitle-text">
                                     {data["title"]}
                                 </div>
