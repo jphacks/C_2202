@@ -8,6 +8,8 @@ import React, {
 import axios from "axios";
 // import Draggable from "react-draggable";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import "../styles/startPage.css";
 import "../styles/editPage.css";
@@ -23,43 +25,50 @@ import MyModal from "../components/MyModal";
 
 const backendURL = "http://127.0.0.1:8000";
 
-const data_ = [
-  {
-    id: 0,
-    商品名: "PFUキーボードHHKBProfessionalHYBRID日本語配列/墨",
-    価格: 3100,
-    評価: 117,
-    画像: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-    Brand: "HHKB",
-    メーカー: "PFU",
-    シリーズ: "HYBRID",
-    梱包サイズ: "32.2x16x5.8cm;820g",
-    電池: "2単3形電池(付属)",
-    製造元リファレンス: "PD-KB820B",
-    カラー: "Black",
-    同梱バッテリー: "はい",
-    商品の重量: 820,
-  },
-];
+// const data_ = [
+//   {
+//     id: 0,
+//     商品名: "PFUキーボードHHKBProfessionalHYBRID日本語配列/墨",
+//     価格: 3100,
+//     評価: 117,
+//     画像: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+//     Brand: "HHKB",
+//     メーカー: "PFU",
+//     シリーズ: "HYBRID",
+//     梱包サイズ: "32.2x16x5.8cm;820g",
+//     電池: "2単3形電池(付属)",
+//     製造元リファレンス: "PD-KB820B",
+//     カラー: "Black",
+//     同梱バッテリー: "はい",
+//     商品の重量: 820,
+//   },
+// ];
 
-const columnlist_ = [
-  "価格",
-  "評価",
-  "Brand",
-  "メーカー",
-  "シリーズ",
-  "梱包サイズ",
-  "電池",
-  "製造元リファレンス",
-  "カラー",
-  "同梱バッテリー",
-  "商品の重量",
-];
+// const columnlist_ = [
+//   "価格",
+//   "評価",
+//   "Brand",
+//   "メーカー",
+//   "シリーズ",
+//   "梱包サイズ",
+//   "電池",
+//   "製造元リファレンス",
+//   "カラー",
+//   "同梱バッテリー",
+//   "商品の重量",
+// ];
 
 const EditPage = () => {
-  const [dataList, setDataList] = useState(data_); // 商品の情報のリスト
-  const [columnList, setColumnList] = useState(columnlist_); // カラムのリスト
-  const [showInputModal, setShowInputModal] = useState(false); // Modalコンポーネントの表示の状態を定義する
+  // localStorage.clear();
+  // localStorageからデータを取得
+  const storedDataList = GetArray("Data");
+  const storedColumnList = GetArray("Column");
+  const [dataList, setDataList] = useState(
+    storedDataList ? storedDataList : []
+  ); // 商品の情報のリスト
+  const [columnList, setColumnList] = useState(
+    storedColumnList ? storedColumnList : []
+  ); // カラムのリスト
   const [showLoader, setShowLoader] = useState(false); // ロードアニメーションの表示の状態を定義する
   const [sort, setSort] = useState({}); // ソートするキーと昇順or降順の状態を保持
   const [dialogConfig, setDialogConfig] = useState(undefined); // ダイアログボックスの要素
@@ -188,6 +197,19 @@ const EditPage = () => {
         });
       }
     }
+  };
+
+  // データの削除
+  const deleteData = (index) => {
+    setDataList((prevState) => {
+      const state = prevState.slice(0, prevState.length);
+      state.splice(index, 1);
+      SetArray(state, "Data");
+      if (state.length === 0) {
+        SetArray([], "Column");
+      }
+      return state;
+    });
   };
 
   // ソートした商品の配列
@@ -407,6 +429,23 @@ const EditPage = () => {
                   <tr className="item-line" key={index}>
                     <th className="item-title-cell">{data["商品名"]}</th>
                     <TableLine data={data} index={index} />
+                    <td className="delete-button-cell">
+                      <Button
+                        variant="contained"
+                        sx={[
+                          { color: "#d2d2d2", backgroundColor: "#D10000" },
+                          {
+                            "&:hover": {
+                              backgroundColor: "#D13F3F",
+                            },
+                          },
+                        ]}
+                        startIcon={<DeleteIcon />}
+                        onClick={deleteData(data["id"])}
+                      >
+                        Delete
+                      </Button>
+                    </td>
                   </tr>
                 );
               })}

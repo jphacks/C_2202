@@ -1,5 +1,3 @@
-// MyComponents.js
-import React, { useEffect, useCallback, useState } from "react";
 import "../styles/inputModal.css";
 
 import StartButton from "./StartButton";
