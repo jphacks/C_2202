@@ -6,6 +6,8 @@ import {
     Tooltip,
     Legend,
   } from "chart.js";
+import { useLocation } from "react-router-dom";
+import { Link} from "react-router-dom";
 import Chart from "chart.js/auto"
 import React, { useEffect,useState, useRef} from "react";
 import "../styles/radarChartPage.css"
@@ -14,156 +16,164 @@ import StartButton from "../components/StartButton";
 
 
 const RadarChartComponent = () => {
-    const testData = [
-        {
-            id: 0,
-            title: "PFUキーボードHHKBProfessionalHYBRID日本語配列/墨",
-            price: 3100,
-            star: 117,
-            hoge: 100,
-            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-            Brand: "HHKB",
-            メーカー: "PFU",
-            シリーズ: "HYBRID",
-            梱包サイズ: "32.2x16x5.8cm;820g",
-            電池: "2単3形電池(付属)",
-            製造元リファレンス: "PD-KB820B",
-            カラー: "Black",
-            同梱バッテリー: "はい",
-            商品の重量: "820g",
-        },
-        {
-            id: 1,
-            title: "a",
-            price: 1900,
-            star: 7,
-            hoge: 100,
-            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-            Brand: "HHKB",
-            メーカー: "PFU",
-            シリーズ: "HYBRID",
-            梱包サイズ: "32.2x16x5.8cm;820g",
-            電池: "2単3形電池(付属)",
-            製造元リファレンス: "PD-KB820B",
-            カラー: "Black",
-            同梱バッテリー: "はい",
-            商品の重量: "820g",
-        },
-        {
-            id: 2,
-            title: "v",
-            price: 3100,
-            star: 47,
-            hoge: 100,
-            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-            Brand: "HHKB",
-            メーカー: "PFU",
-            シリーズ: "HYBRID",
-            梱包サイズ: "32.2x16x5.8cm;820g",
-            電池: "2単3形電池(付属)",
-            製造元リファレンス: "PD-KB820B",
-            カラー: "Black",
-            同梱バッテリー: "はい",
-            商品の重量: "820g",
-        },
-        {
-            id: 3,
-            title: "z",
-            price: 3190,
-            star: 7,
-            hoge: 100,
-            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-            Brand: "HHKB",
-            メーカー: "PFU",
-            シリーズ: "HYBRID",
-            梱包サイズ: "32.2x16x5.8cm;820g",
-            電池: "2単3形電池(付属)",
-            製造元リファレンス: "PD-KB820B",
-            カラー: "Black",
-            同梱バッテリー: "はい",
-            商品の重量: "820g",
-        },{
-            id: 4,
-            title: "test",
-            price: 3190,
-            star: 7,
-            hoge: 100,
-            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-            Brand: "HHKB",
-            メーカー: "PFU",
-            シリーズ: "HYBRID",
-            梱包サイズ: "32.2x16x5.8cm;820g",
-            電池: "2単3形電池(付属)",
-            製造元リファレンス: "PD-KB820B",
-            カラー: "Black",
-            同梱バッテリー: "はい",
-            商品の重量: "820g",
-        },{
-            id: 4,
-            title: "test",
-            price: 3190,
-            star: 7,
-            hoge: 100,
-            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-            Brand: "HHKB",
-            メーカー: "PFU",
-            シリーズ: "HYBRID",
-            梱包サイズ: "32.2x16x5.8cm;820g",
-            電池: "2単3形電池(付属)",
-            製造元リファレンス: "PD-KB820B",
-            カラー: "Black",
-            同梱バッテリー: "はい",
-            商品の重量: "820g",
-        },{
-            id: 4,
-            title: "test",
-            price: 3190,
-            star: 7,
-            hoge: 100,
-            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-            Brand: "HHKB",
-            メーカー: "PFU",
-            シリーズ: "HYBRID",
-            梱包サイズ: "32.2x16x5.8cm;820g",
-            電池: "2単3形電池(付属)",
-            製造元リファレンス: "PD-KB820B",
-            カラー: "Black",
-            同梱バッテリー: "はい",
-            商品の重量: "820g",
-        },{
-            id: 4,
-            title: "test",
-            price: 3190,
-            star: 7,
-            hoge: 100,
-            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-            Brand: "HHKB",
-            メーカー: "PFU",
-            シリーズ: "HYBRID",
-            梱包サイズ: "32.2x16x5.8cm;820g",
-            電池: "2単3形電池(付属)",
-            製造元リファレンス: "PD-KB820B",
-            カラー: "Black",
-            同梱バッテリー: "はい",
-            商品の重量: "820g",
-        },{
-            id: 4,
-            title: "test",
-            price: 3190,
-            star: 7,
-            hoge: 100,
-            img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
-            Brand: "HHKB",
-            メーカー: "PFU",
-            シリーズ: "HYBRID",
-            梱包サイズ: "32.2x16x5.8cm;820g",
-            電池: "2単3形電池(付属)",
-            製造元リファレンス: "PD-KB820B",
-            カラー: "Black",
-            同梱バッテリー: "はい",
-            商品の重量: "820g",
-        }
-    ];
+    const { state } = useLocation();
+    console.log("STATE!!!!"+state.state)
+    for(let i = 0; i < state.state.length; i++){
+        console.log(state.state[i])
+        state.state[i].id = i
+        state.state[i].title = state.state[i]["商品名"]
+    }
+    // const testData = [
+    //     {
+    //         id: 0,
+    //         title: "PFUキーボードHHKBProfessionalHYBRID日本語配列/墨",
+    //         price: 3100,
+    //         star: 117,
+    //         hoge: 100,
+    //         img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+    //         Brand: "HHKB",
+    //         メーカー: "PFU",
+    //         シリーズ: "HYBRID",
+    //         梱包サイズ: "32.2x16x5.8cm;820g",
+    //         電池: "2単3形電池(付属)",
+    //         製造元リファレンス: "PD-KB820B",
+    //         カラー: "Black",
+    //         同梱バッテリー: "はい",
+    //         商品の重量: "820g",
+    //     },
+    //     {
+    //         id: 1,
+    //         title: "a",
+    //         price: 1900,
+    //         star: 7,
+    //         hoge: 100,
+    //         img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+    //         Brand: "HHKB",
+    //         メーカー: "PFU",
+    //         シリーズ: "HYBRID",
+    //         梱包サイズ: "32.2x16x5.8cm;820g",
+    //         電池: "2単3形電池(付属)",
+    //         製造元リファレンス: "PD-KB820B",
+    //         カラー: "Black",
+    //         同梱バッテリー: "はい",
+    //         商品の重量: "820g",
+    //     },
+    //     {
+    //         id: 2,
+    //         title: "v",
+    //         price: 3100,
+    //         star: 47,
+    //         hoge: 100,
+    //         img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+    //         Brand: "HHKB",
+    //         メーカー: "PFU",
+    //         シリーズ: "HYBRID",
+    //         梱包サイズ: "32.2x16x5.8cm;820g",
+    //         電池: "2単3形電池(付属)",
+    //         製造元リファレンス: "PD-KB820B",
+    //         カラー: "Black",
+    //         同梱バッテリー: "はい",
+    //         商品の重量: "820g",
+    //     },
+    //     {
+    //         id: 3,
+    //         title: "z",
+    //         price: 3190,
+    //         star: 7,
+    //         hoge: 100,
+    //         img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+    //         Brand: "HHKB",
+    //         メーカー: "PFU",
+    //         シリーズ: "HYBRID",
+    //         梱包サイズ: "32.2x16x5.8cm;820g",
+    //         電池: "2単3形電池(付属)",
+    //         製造元リファレンス: "PD-KB820B",
+    //         カラー: "Black",
+    //         同梱バッテリー: "はい",
+    //         商品の重量: "820g",
+    //     },{
+    //         id: 4,
+    //         title: "test",
+    //         price: 3190,
+    //         star: 7,
+    //         hoge: 100,
+    //         img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+    //         Brand: "HHKB",
+    //         メーカー: "PFU",
+    //         シリーズ: "HYBRID",
+    //         梱包サイズ: "32.2x16x5.8cm;820g",
+    //         電池: "2単3形電池(付属)",
+    //         製造元リファレンス: "PD-KB820B",
+    //         カラー: "Black",
+    //         同梱バッテリー: "はい",
+    //         商品の重量: "820g",
+    //     },{
+    //         id: 4,
+    //         title: "test",
+    //         price: 3190,
+    //         star: 7,
+    //         hoge: 100,
+    //         img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+    //         Brand: "HHKB",
+    //         メーカー: "PFU",
+    //         シリーズ: "HYBRID",
+    //         梱包サイズ: "32.2x16x5.8cm;820g",
+    //         電池: "2単3形電池(付属)",
+    //         製造元リファレンス: "PD-KB820B",
+    //         カラー: "Black",
+    //         同梱バッテリー: "はい",
+    //         商品の重量: "820g",
+    //     },{
+    //         id: 4,
+    //         title: "test",
+    //         price: 3190,
+    //         star: 7,
+    //         hoge: 100,
+    //         img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+    //         Brand: "HHKB",
+    //         メーカー: "PFU",
+    //         シリーズ: "HYBRID",
+    //         梱包サイズ: "32.2x16x5.8cm;820g",
+    //         電池: "2単3形電池(付属)",
+    //         製造元リファレンス: "PD-KB820B",
+    //         カラー: "Black",
+    //         同梱バッテリー: "はい",
+    //         商品の重量: "820g",
+    //     },{
+    //         id: 4,
+    //         title: "test",
+    //         price: 3190,
+    //         star: 7,
+    //         hoge: 100,
+    //         img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+    //         Brand: "HHKB",
+    //         メーカー: "PFU",
+    //         シリーズ: "HYBRID",
+    //         梱包サイズ: "32.2x16x5.8cm;820g",
+    //         電池: "2単3形電池(付属)",
+    //         製造元リファレンス: "PD-KB820B",
+    //         カラー: "Black",
+    //         同梱バッテリー: "はい",
+    //         商品の重量: "820g",
+    //     },{
+    //         id: 4,
+    //         title: "test",
+    //         price: 3190,
+    //         star: 7,
+    //         hoge: 100,
+    //         img: "https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/61ZtNZ4GYCL._AC_SL1280_.jpg",
+    //         Brand: "HHKB",
+    //         メーカー: "PFU",
+    //         シリーズ: "HYBRID",
+    //         梱包サイズ: "32.2x16x5.8cm;820g",
+    //         電池: "2単3形電池(付属)",
+    //         製造元リファレンス: "PD-KB820B",
+    //         カラー: "Black",
+    //         同梱バッテリー: "はい",
+    //         商品の重量: "820g",
+    //     }
+    // ];
+    const testData = state.state
     let columnList = []
     let valueList = []
     let dataList = []
@@ -192,7 +202,6 @@ const RadarChartComponent = () => {
 
     function addData(key,value,i){
         if(key === "title"){
-            valueList[i].push(value)
             dataList[i][key] = value
         }
 
@@ -226,10 +235,10 @@ const RadarChartComponent = () => {
     for(let i = 0; i < testData.length; i++){
         data.datasets.push(new Object())
         data.datasets[i].hidden = true
-        data.datasets[i].label = valueList[i][0]
+        data.datasets[i].label = state.state[i].title
         data.datasets[i].data = []
-        for (let j = 0; j < valueList[i].length - 1; j++){
-            data.datasets[i].data.push(valueList[i][j+1])
+        for (let j = 0; j < valueList[i].length; j++){
+            data.datasets[i].data.push(valueList[i][j])
         }
         const color = `${randomColor()}`
         data.datasets[i].backgroundColor = `${color},0.3)`
@@ -239,6 +248,7 @@ const RadarChartComponent = () => {
         data.datasets[i].pointBorderColor = '#fff'
         data.datasets[i].pointHoverBackgroundColor = '#fff'
         data.datasets[i].pointHoverBorderColor = `${color})`
+        console.log(data)
     }
 
     const getImage = (e) => {
@@ -364,8 +374,21 @@ const RadarChartComponent = () => {
                     )
                 })}
                 </div>
-                <div className="radar-start-button">
-                    <StartButton text={"Output CSV"} buttonClick={OutputCSV} />
+                <div
+                    style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    marginRight: "30px",
+                    }}
+                >
+                    <div style={{ margin: "10px 20px" }}>
+                    <Link to ={"/"}>
+                        <StartButton text={"Back"} buttonClick={OutputCSV} />
+                    </Link>
+                    </div>
+                    <div style={{ margin: "10px 20px" }}>
+                        <StartButton text={"Output CSV"} buttonClick={OutputCSV} />
+                    </div>
                 </div>
             </div>
         </div>

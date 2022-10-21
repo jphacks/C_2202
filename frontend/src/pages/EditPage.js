@@ -8,6 +8,7 @@ import React, {
 import axios from "axios";
 // import Draggable from "react-draggable";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Link} from "react-router-dom";
 
 import "../styles/startPage.css";
 import "../styles/editPage.css";
@@ -357,6 +358,10 @@ const EditPage = () => {
     setModalConfig(undefined);
   };
 
+  const goRadar = () => {
+    console.log(dataList)
+  }
+
   return (
     <>
       {/* <MenuBar /> */}
@@ -433,7 +438,12 @@ const EditPage = () => {
         }}
       >
         <div style={{ margin: "10px 20px" }}>
-          <StartButton text={"Open with Rader"} />
+          <Link to ={"/radar"} state={{ state: dataList }}>
+            <StartButton 
+              text={"Open with Rader"} 
+              onClick={() => goRadar()
+              }/>
+          </Link>
         </div>
         <div style={{ margin: "10px 20px" }}>
           <StartButton
