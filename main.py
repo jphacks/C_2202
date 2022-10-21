@@ -10,6 +10,8 @@ from pydantic import BaseModel
 from modules.getPageFromAmazon import getPageFromAmazon
 from modules.getGoodsInfoByUrl import getGoodsInfoByUrl
 from modules.chengeJsonToCsv import chengeJsonToCsv
+from modules.submoduels.format import format
+
 
 app = FastAPI()
 
@@ -75,8 +77,15 @@ def upload_file(upload_file: UploadFile = File(...)):
     finally:
         upload_file.file.close()
     list = []
+    dict = {}
     with open(tmp_path, "r", encoding="utf-8_sig") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            list.append(row)
+            for k, v in row.items():
+                if k == "":
+                    print("enpty column")
+                else:  
+                    k, v = format(k, v)
+                    dict[k] = v
+            list.append(dict)
     return list

@@ -357,44 +357,61 @@ const EditPage = () => {
   };
 
   // CSVからjsonを取得
-  const CSVSubmit = (e) => {
-    getCSVtoJson(e.target.files[0]);
-    e.preventDefault();
+  const CSVSubmit = (event) => {
+    console.log(event);
+    // FileReaderを生成
+    // var fileReader = new FileReader();
+
+    // ファイルを取得
+    let file = event.target.files[0];
+    console.log(file);
+    const formdata = new FormData();
+    formdata.append("upload_file", file);
+    getCSVtoJson(formdata);
+
+    event.preventDefault();
   };
+
   const getCSVtoJson = (CSVfile) => {
     if (!CSVfile) return;
     setShowLoader(true);
     console.log("enter");
     console.log(CSVfile);
-    // axios
-    //   .post(backendURL + "/edit/url/", {
-    //     productURL: productURL,
-    //   })
-    //   .then(function (res) {
-    //     console.log(res.data);
-    //     try {
-    //       // 商品リストに追加
-    //       let dataList_ = dataList;
-    //       dataList_.push(res.data);
-    //       setDataList(dataList_);
-    //       // 新しいカラムを追加
-    //       let newColumnList = columnList;
-    //       for (const newcol of Object.keys(res.data)) {
-    //         if (
-    //           newcol !== "id" &&
-    //           newcol !== "商品名" &&
-    //           newcol !== "画像" &&
-    //           !newColumnList.some((col) => newcol === col)
-    //         ) {
-    //           newColumnList.push(newcol);
-    //         }
-    //       }
-    //       setColumnList(newColumnList);
-    //     } catch (e) {
-    //       window.alert(e);
-    //     }
-    setShowLoader(false);
-    setModalConfig(undefined);
+    axios.post(backendURL + "/newdata/upload/", CSVfile).then(function (res) {
+      console.log(res.data);
+      try {
+        // 商品リストに追加
+        let dataList_ = dataList;
+        console.log(res.data);
+        dataList_.concat(res.data);
+        setDataList((prevState) => {
+          const state = prevState.slice(0, dataList.length);
+          res.data.forEach((value) => state.push(value));
+          SetArray(state, "Data");
+          return state;
+        });
+
+        // 新しいカラムを追加
+        let newColumnList = columnList;
+        for (const newcol of Object.keys(res.data[0])) {
+          if (
+            newcol !== "" &&
+            newcol !== "URL" &&
+            newcol !== "id" &&
+            newcol !== "商品名" &&
+            newcol !== "画像" &&
+            !newColumnList.some((col) => newcol === col)
+          ) {
+            newColumnList.push(newcol);
+          }
+        }
+        SetArray(newColumnList, "Column");
+        setColumnList(newColumnList);
+      } catch (e) {
+        window.alert(e);
+      }
+      setShowLoader(false);
+    });
   };
 
   const goRadar = () => {
@@ -448,7 +465,7 @@ const EditPage = () => {
                 return (
                   <tr className="item-line" key={index}>
                     <th className="item-title-cell">
-                      <a href={data["URL"]} target="_blank">
+                      <a href={data["URL"]} target="_blank" rel="noreferrer">
                         {data["商品名"]}
                       </a>
                     </th>
@@ -488,7 +505,14 @@ const EditPage = () => {
             text={"Open CSV"}
             onClick={() => inputRef.current.click()}
           />
-          <input hidden ref={inputRef} type="file" onChange={CSVSubmit} />
+          <input
+            hidden
+            ref={inputRef}
+            type="file"
+            onChange={CSVSubmit}
+            name="datafile"
+            accept=".csv"
+          />
         </div>
         <div style={{ margin: "10px 20px" }}>
             <StartButton 
