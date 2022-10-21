@@ -274,10 +274,26 @@ const EditPage = () => {
   };
 
   // リンクから商品情報を取得
+
+  const sendProductData = () => {
+    setShowLoader(true); 
+    console.log(dataList)
+    axios
+      .post(backendURL+"/newdata/download/", {
+        dataList: dataList,
+      })
+      .then(function(res){
+        console.log(res.data)
+        console.log("送信完了")
+        setShowLoader(false);
+      })
+  }
+
   const productSubmit = (e) => {
     getProductData(e.target[0].value);
     e.preventDefault();
   };
+
   const getProductData = (productURL) => {
     setShowLoader(true);
     console.log("enter");
@@ -438,11 +454,15 @@ const EditPage = () => {
         }}
       >
         <div style={{ margin: "10px 20px" }}>
+            <StartButton 
+              text={"Download CSV"} 
+              onClick={() => sendProductData()}/>
+        </div>
+        <div style={{ margin: "10px 20px" }}>
           <Link to ={"/radar"} state={{ state: dataList }}>
             <StartButton 
               text={"Open with Rader"} 
-              onClick={() => goRadar()
-              }/>
+              onClick={() => goRadar()}/>
           </Link>
         </div>
         <div style={{ margin: "10px 20px" }}>
