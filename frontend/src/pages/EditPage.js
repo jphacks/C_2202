@@ -317,44 +317,51 @@ const EditPage = () => {
   };
 
   // CSVからjsonを取得
-  const CSVSubmit = (e) => {
-    getCSVtoJson(e.target.files[0]);
-    e.preventDefault();
+  const CSVSubmit = (event) => {
+    console.log(event);
+    // FileReaderを生成
+    // var fileReader = new FileReader();
+
+    // ファイルを取得
+    let file = event.target.files[0];
+    console.log(file);
+    const formdata = new FormData();
+    formdata.append("upload_file", file);
+    getCSVtoJson(formdata);
+
+    event.preventDefault();
   };
+
   const getCSVtoJson = (CSVfile) => {
     if (!CSVfile) return;
     setShowLoader(true);
     console.log("enter");
     console.log(CSVfile);
-    axios
-      .post(backendURL + "/newdata/upload/", {
-        file: CSVfile,
-      })
-      .then(function (res) {
-        console.log(res.data);
-        try {
-          // 商品リストに追加
-          let dataList_ = dataList;
-          dataList_.concat(res.data);
-          setDataList(dataList_);
-          // 新しいカラムを追加
-          let newColumnList = columnList;
-          for (const newcol of Object.keys(res.data[0])) {
-            if (
-              newcol !== "id" &&
-              newcol !== "商品名" &&
-              newcol !== "画像" &&
-              !newColumnList.some((col) => newcol === col)
-            ) {
-              newColumnList.push(newcol);
-            }
+    axios.post(backendURL + "/newdata/upload/", CSVfile).then(function (res) {
+      console.log(res.data);
+      try {
+        // 商品リストに追加
+        let dataList_ = dataList;
+        dataList_.concat(res.data);
+        setDataList(dataList_);
+        // 新しいカラムを追加
+        let newColumnList = columnList;
+        for (const newcol of Object.keys(res.data[0])) {
+          if (
+            newcol !== "id" &&
+            newcol !== "商品名" &&
+            newcol !== "画像" &&
+            !newColumnList.some((col) => newcol === col)
+          ) {
+            newColumnList.push(newcol);
           }
-          setColumnList(newColumnList);
-        } catch (e) {
-          window.alert(e);
         }
-        setShowLoader(false);
-      });
+        setColumnList(newColumnList);
+      } catch (e) {
+        window.alert(e);
+      }
+      setShowLoader(false);
+    });
   };
 
   return (
@@ -440,7 +447,14 @@ const EditPage = () => {
             text={"Open CSV File"}
             onClick={() => inputRef.current.click()}
           />
-          <input hidden ref={inputRef} type="file" onChange={CSVSubmit} />
+          <input
+            hidden
+            ref={inputRef}
+            type="file"
+            onChange={CSVSubmit}
+            name="datafile"
+            accept=".csv"
+          />
         </div>
       </div>
       {modalConfig && <MyModal {...modalConfig} />}
