@@ -5,14 +5,12 @@ import {
     Filler,
     Tooltip,
     Legend,
-    CategoryScale,
   } from "chart.js";
 import Chart from "chart.js/auto"
-import React, { useEffect,useState, useRef, useCallback } from "react";
+import React, { useEffect,useState, useRef} from "react";
 import "../styles/radarChartPage.css"
 import MenuBar from "../components/MenuBar"
 import StartButton from "../components/StartButton";
-import { css } from '@emotion/css';
 
 
 const RadarChartComponent = () => {
@@ -325,12 +323,6 @@ const RadarChartComponent = () => {
         return <canvas ref={canvasRef} />;
     };
 
-    const titleStyle = []
-    for(let i = 0; i < testData.length; i++){
-        titleStyle.push("radar-janome")
-    }
-    const [buttonstyle,setButtonStyle] = useState(titleStyle)
-
     const hiddenData = (index) => {
         if(chart.data.datasets[index].hidden === true){
             chart.data.datasets[index].hidden = false
@@ -360,7 +352,7 @@ const RadarChartComponent = () => {
                     return(
                         <div>
                             <div className='radar-data'>
-                            <button className={buttonstyle[index]} onClick={() => {
+                            <button className="radar-janome" onClick={() => {
                                 hiddenData(index) 
                             }} />
                                 <div className="radar-datatitle-text">
