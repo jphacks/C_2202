@@ -2,7 +2,7 @@ import pandas as pd
 import json
 import os
 def chengeJsonToCsv(data):
-    data = json.loads(data)
+    # data = json.loads(data)
     try:
         os.remove("./output.csv")
     except:

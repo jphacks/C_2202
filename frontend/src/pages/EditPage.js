@@ -274,10 +274,49 @@ const EditPage = () => {
   };
 
   // リンクから商品情報を取得
+
+  const toBlobZip = (base64) => {
+    console.log(base64.toString().replace(/^.*,/, ''))
+    const bin = decodeURIComponent(atob(base64.toString().replace(/^.*,/, '')));
+    const buffer = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) {
+      buffer[i] = bin.charCodeAt(i);
+    }
+    const blob = new Blob([buffer.buffer], {
+      type: 'text/csv'
+    });
+    return blob;
+  }
+  
+  const element = HTMLElement;
+  const sendProductData = () => {
+    setShowLoader(true); 
+    console.log(dataList)
+    axios
+      .post(backendURL+"/newdata/download/", {
+        dataList: dataList,
+      })
+      .then(function(res){
+        console.log(res)
+        const blob = toBlobZip(res.data);
+        const url = window.URL.createObjectURL(blob);
+        console.log(blob)
+        console.log(url)
+        const link = document.querySelector('#CSV');
+        console.log(link)
+        link.href = url;
+        link.download = "output";
+        link.click();
+        console.log("送信完了")
+        setShowLoader(false);
+      })
+  }
+
   const productSubmit = (e) => {
     getProductData(e.target[0].value);
     e.preventDefault();
   };
+
   const getProductData = (productURL) => {
     setShowLoader(true);
     console.log("enter");
@@ -458,13 +497,12 @@ const EditPage = () => {
           <Link to ={"/radar"} state={{ state: dataList }}>
             <StartButton 
               text={"Open with Rader"} 
-              onClick={() => goRadar()
-              }/>
+              onClick={() => goRadar()}/>
           </Link>
         </div>
         <div style={{ margin: "10px 20px" }}>
           <StartButton
-            text={"Open CSV File"}
+            text={"Open CSV"}
             onClick={() => inputRef.current.click()}
           />
           <input
@@ -476,6 +514,14 @@ const EditPage = () => {
             accept=".csv"
           />
         </div>
+        <div style={{ margin: "10px 20px" }}>
+            <StartButton 
+              
+              text={"Download CSV"} 
+              onClick={() => sendProductData()}/>
+              <a id = "CSV"></a>
+        </div>
+        
       </div>
       {modalConfig && <MyModal {...modalConfig} />}
       <Loader loaderFlag={showLoader} />
