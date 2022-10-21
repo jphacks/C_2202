@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Routes, Route  } from 'react-router-dom';
-import StartPage from './StartPage';
-import RadarChartComponent from './RadarChartPage';
-import { MyResponsiveRadar } from './N_RadarChartPage';
+// import StartPage from './StartPage';
 import EditPage from './EditPage';
-
+import RadarChartComponent  from './RadarChartPage';
+// import { elementType } from 'prop-types';
 class App extends Component {
   render() {
     return (
@@ -14,8 +13,6 @@ class App extends Component {
             <Route path={`/`} element={<EditPage />} />
             <Route path={`/edit`} element={<EditPage />} />
             <Route path={`/radar/`} element={<RadarChartComponent />} />
-            <Route path={`/radar2/`} element={<MyResponsiveRadar />} />
-
           </Routes>
         </BrowserRouter>
       </div>
