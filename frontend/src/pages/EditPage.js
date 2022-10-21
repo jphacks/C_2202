@@ -18,6 +18,8 @@ import MenuBar from "../components/MenuBar";
 import AddButton from "../components/AddButton";
 import SortButton from "../components/SortButton";
 import Loader from "../components/Loading";
+import MyDialog from "../components/MyDialog";
+import MyModal from "../components/MyModal";
 
 const backendURL = "http://127.0.0.1:8000";
 
@@ -36,8 +38,8 @@ const data_ = [
     製造元リファレンス: "PD-KB820B",
     カラー: "Black",
     同梱バッテリー: "はい",
-    商品の重量: "820g",
-    URL:"https://www.amazon.co.jp/HHKB-Professional-HYBRID-%E6%97%A5%E6%9C%AC%E8%AA%9E%E9%85%8D%E5%88%97%EF%BC%8F%E5%A2%A8/dp/B082TZPCGJ"
+    商品の重量: 820,
+    URL: "https://www.amazon.co.jp/HHKB-Professional-HYBRID-%E6%97%A5%E6%9C%AC%E8%AA%9E%E9%85%8D%E5%88%97%EF%BC%8F%E5%A2%A8/dp/B082TZPCGJ",
   },
 ];
 
@@ -55,15 +57,45 @@ const columnlist_ = [
   "商品の重量",
 ];
 
+// 配列をlocalStorageで保管するときはjsonにする必要がある
+const SetArray = (arr, key) => {
+  if (window.localStorage) {
+    let json = JSON.stringify(arr, undefined, 1);
+    console.log(json);
+    localStorage.setItem(key, json);
+  }
+};
+
+// 取得するときはjsonを配列に戻す
+const GetArray = (key) => {
+  if (window.localStorage) {
+    let json = localStorage.getItem(key);
+    if (json) {
+      let array = JSON.parse(json);
+      return array;
+    }
+    return json;
+  }
+  return null;
+};
+
 const EditPage = () => {
-  const [dataList, setDataList] = useState(data_); // 商品の情報のリスト
-  const [columnList, setColumnList] = useState(columnlist_); // カラムのリスト
-  const [newProductURL, setNewProductURL] = useState("");
-  const [showInputModal, setShowInputModal] = useState(false); // Modalコンポーネントの表示の状態を定義する
+  // localStorageからデータを取得
+  const storedDataList = GetArray("Data");
+  const storedColumnList = GetArray("Column");
+  const [dataList, setDataList] = useState(
+    storedDataList ? storedDataList : []
+  ); // 商品の情報のリスト
+  const [columnList, setColumnList] = useState(
+    storedColumnList ? storedColumnList : []
+  ); // カラムのリスト
   const [showLoader, setShowLoader] = useState(false); // ロードアニメーションの表示の状態を定義する
   const [sort, setSort] = useState({}); // ソートするキーと昇順or降順の状態を保持
+  const [dialogConfig, setDialogConfig] = useState(undefined); // ダイアログボックスの要素
+  const [modalConfig, setModalConfig] = useState(undefined); // モーダルの要素
 
   const draggableColumn = useRef(null);
+  const inputRef = useRef(null);
 
   const dragStart = (event) => {
     const { target } = event;
@@ -88,25 +120,107 @@ const EditPage = () => {
     event.preventDefault();
   };
 
-  const dragDrop = (event) => {
-    event.preventDefault();
+  const dragDrop = async (event) => {
+    // event.preventDefault();
     event.stopPropagation();
     const { currentTarget } = event;
     const id = parseInt(currentTarget.id);
+    const previousId = draggableColumn.current.id;
+    // ドラッグしてきたカラムとホバーしているカラムが異なる場合のみ処理する
+    if (id !== previousId) {
+      if (event.shiftKey) {
+        // シフトが押されている場合→カラムの統合
+        var mergeFrom = columnList[previousId];
+        var mergeTo = columnList[id];
 
-    setColumnList((prevState) => {
-      // This is to not mutate state object
-      const dragged = prevState.dragged;
-      const state = prevState.slice(0, prevState.length);
+        // 統合が可能かどうかを判定
+        // 両方のカラムにデータが入っているか
+        var notBoth = true;
+        // 数字のデータが存在するか
+        var existNumber = false;
+        // 文字列のデータが存在するかどうか
+        var existString = false;
+        dataList.forEach((data) => {
+          notBoth &= !(
+            data[mergeFrom] !== undefined && data[mergeTo] !== undefined
+          );
+          existNumber |=
+            typeof data[mergeFrom] === "number" ||
+            typeof data[mergeTo] === "number";
+          existString |=
+            typeof data[mergeFrom] === "string" ||
+            typeof data[mergeTo] === "string";
+        });
 
-      const previousId = draggableColumn.current.id;
-      if (previousId !== id) {
-        // 要素を入れ替える
-        state.splice(previousId, 1);
-        state.splice(id, 0, dragged);
+        // 両方のカラムにデータが入っている商品が存在しないかつ､異なる型のデータが存在しないなら統合可能
+        if (notBoth && !(existNumber && existString)) {
+          const ret = await new Promise((resolve) => {
+            setDialogConfig({
+              onClose: resolve,
+              message: `${mergeFrom}
+                 を 
+                ${mergeTo}
+                 に統合します。よろしいですか？`,
+              confirm: true,
+            });
+          });
+          setDialogConfig(undefined);
+          if (ret === "ok") {
+            // カラムのリストからドラッグしてきたカラムを削除
+            setColumnList((prevState) => {
+              const dragged = prevState.dragged;
+              mergeFrom = dragged;
+              mergeTo = prevState[id];
+              const state = prevState.slice(0, prevState.length);
+              if (previousId !== id) {
+                state.splice(previousId, 1);
+              }
+              SetArray(state, "Column");
+              return state;
+            });
+
+            // データを統合
+            setDataList((prevState) => {
+              const state = prevState.slice(0, prevState.length);
+              state.forEach((data) => {
+                console.log(mergeTo, data[mergeTo]);
+                data[mergeTo] =
+                  data[mergeTo] !== undefined ? data[mergeTo] : data[mergeFrom];
+                data[mergeFrom] = undefined;
+              });
+              SetArray(state, "Data");
+              return state;
+            });
+          }
+          // window.alert(mergeFrom + "を" + mergeTo + "に統合しました");
+        } else {
+          const _ = await new Promise((resolve) => {
+            setDialogConfig({
+              onClose: resolve,
+              message: !notBoth
+                ? "データが競合するので統合できません。"
+                : "データの型が異なるので統合できません。",
+              confirm: false,
+            });
+          });
+          setDialogConfig(undefined);
+        }
+        // setDataList((prevState) => {});
+      } else {
+        // シフトが押されてない場合→カラムの移動
+        setColumnList((prevState) => {
+          const dragged = prevState.dragged;
+          const state = prevState.slice(0, prevState.length);
+          if (previousId !== id) {
+            // 要素を入れ替える
+            state.splice(previousId, 1);
+            state.splice(id, 0, dragged);
+          }
+          SetArray(state, "Column");
+          return state;
+        });
       }
-      return state;
-    });
+    }
   };
 
   // ソートした商品の配列
@@ -117,12 +231,20 @@ const EditPage = () => {
         a = a[sort.key];
         b = b[sort.key];
 
+        // undefinedを強制的に下にするようにソート
         if (a === b) {
           return 0;
+        }
+        if (a === undefined) {
+          return 1;
+        }
+        if (b === undefined) {
+          return -1;
         }
         if (a > b) {
           return 1 * sort.order;
         }
+
         return -1 * sort.order;
       });
     }
@@ -131,7 +253,7 @@ const EditPage = () => {
 
   // モーダルの表示
   const closeModal = useCallback(() => {
-    setShowInputModal(false);
+    setModalConfig(undefined);
     document.removeEventListener("click", closeModal);
   }, []);
 
@@ -141,22 +263,24 @@ const EditPage = () => {
     };
   }, [closeModal]);
 
-  function openModal(event) {
-    setShowInputModal(true);
+  const openInputModal = (event) => {
+    setModalConfig({
+      title: "Input URL",
+      onSubmit: productSubmit,
+      URLinput: true,
+    });
     document.addEventListener("click", closeModal);
     event.stopPropagation();
-  }
+  };
 
   const Cell = ({ item, index, column }) => {
     const chengeColor = (event) => {
       const color = event.target.className;
       if (color === "normal-cell") {
-        event.target.className = "red-cell";
-      } else if (color === "red-cell") {
         event.target.className = "green-cell";
       } else if (color === "green-cell") {
-        event.target.className = "blue-cell";
-      } else if (color === "blue-cell") {
+        event.target.className = "red-cell";
+      } else if (color === "red-cell") {
         event.target.className = "normal-cell";
       }
     };
@@ -169,31 +293,22 @@ const EditPage = () => {
 
   const TableLine = ({ data, index }) => {
     return columnList.map((column) => {
-      if (isNaN(data[column])) {
-        return (
-          <Cell
-            index={index}
-            column={column}
-            item={data[column]}
-            key={column + index.toString()}
-          />
-        );
-      } else {
-        return (
-          <Cell
-            index={index}
-            column={column}
-            item={data[column].toLocaleString()}
-            key={column + index.toString()}
-          />
-        );
-      }
+      return (
+        <Cell
+          index={index}
+          column={column}
+          item={
+            isNaN(data[column]) ? data[column] : data[column].toLocaleString()
+          }
+          key={column + index.toString()}
+        />
+      );
     });
   };
 
   // リンクから商品情報を取得
   const productSubmit = (e) => {
-    getProductData(newProductURL);
+    getProductData(e.target[0].value);
     e.preventDefault();
   };
   const getProductData = (productURL) => {
@@ -208,9 +323,10 @@ const EditPage = () => {
         console.log(res.data);
         try {
           // 商品リストに追加
-          let dataList_ = dataList;
-          dataList_.push(res.data);
-          setDataList(dataList_);
+          let newDataList = dataList;
+          dataList.push(res.data);
+          setDataList(newDataList);
+          SetArray(newDataList, "Data");
           // 新しいカラムを追加
           let newColumnList = columnList;
           for (const newcol of Object.keys(res.data)) {
@@ -225,12 +341,54 @@ const EditPage = () => {
             }
           }
           setColumnList(newColumnList);
+          SetArray(newColumnList, "Column");
         } catch (e) {
           window.alert(e);
         }
         setShowLoader(false);
-        setShowInputModal(false);
+        setModalConfig(undefined);
       });
+  };
+
+  // CSVからjsonを取得
+  const CSVSubmit = (e) => {
+    getCSVtoJson(e.target.files[0]);
+    e.preventDefault();
+  };
+  const getCSVtoJson = (CSVfile) => {
+    if (!CSVfile) return;
+    setShowLoader(true);
+    console.log("enter");
+    console.log(CSVfile);
+    // axios
+    //   .post(backendURL + "/edit/url/", {
+    //     productURL: productURL,
+    //   })
+    //   .then(function (res) {
+    //     console.log(res.data);
+    //     try {
+    //       // 商品リストに追加
+    //       let dataList_ = dataList;
+    //       dataList_.push(res.data);
+    //       setDataList(dataList_);
+    //       // 新しいカラムを追加
+    //       let newColumnList = columnList;
+    //       for (const newcol of Object.keys(res.data)) {
+    //         if (
+    //           newcol !== "id" &&
+    //           newcol !== "商品名" &&
+    //           newcol !== "画像" &&
+    //           !newColumnList.some((col) => newcol === col)
+    //         ) {
+    //           newColumnList.push(newcol);
+    //         }
+    //       }
+    //       setColumnList(newColumnList);
+    //     } catch (e) {
+    //       window.alert(e);
+    //     }
+    setShowLoader(false);
+    setModalConfig(undefined);
   };
 
   return (
@@ -274,7 +432,11 @@ const EditPage = () => {
               {sortedDataList.map((data, index) => {
                 return (
                   <tr className="item-line" key={index}>
-                    <th className="item-title-cell" ><a href={data["URL"]} target="_blank">{data["商品名"]}</a></th>
+                    <th className="item-title-cell">
+                      <a href={data["URL"]} target="_blank">
+                        {data["商品名"]}
+                      </a>
+                    </th>
                     <TableLine data={data} index={index} />
                   </tr>
                 );
@@ -283,7 +445,7 @@ const EditPage = () => {
                 <th className="item-title-cell add-button-cell">
                   <AddButton
                     onClicked={(event) => {
-                      openModal(event);
+                      openInputModal(event);
                     }}
                   />
                 </th>
@@ -292,60 +454,27 @@ const EditPage = () => {
           </table>
         </div>
       </div>
-      <div className="button-for-rader">
-        <StartButton text={"Open with Rader"} />
-      </div>
-      {/* Appコンポーネントから子であるModalコンポーネントにpropsを渡す */}
-      {/* <InputModal
-        showFlag={showInputModal}
-        setShowModal={setShowInputModal}
-        onClicked={getProductData}
-        content="Input URL"
-      /> */}
-      {showInputModal ? ( // showFlagがtrueだったらModalを表示する
-        <div className="overlay">
-          <div
-            className="modal-content"
-            onClick={(event) => {
-              event.stopPropagation();
-            }}
-          >
-            <div className="modal-tytle">
-              <div>Input URL</div>
-            </div>
-
-            <form onSubmit={productSubmit}>
-              <div className="mb-3">
-                <input
-                  type="text"
-                  className="form-control url-input-form"
-                  placeholder="amazonの商品ページのURLを入力してください"
-                  onChange={(e) => {
-                    setNewProductURL(e.target.value);
-                  }}
-                />
-              </div>
-              <div className="enter-button">
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  style={{
-                    backgroundColor: "#4d638c",
-                    color: "#d2d2d2",
-                    width: "8rem",
-                  }}
-                  // onClick={submitClicked}
-                >
-                  Enter
-                </button>
-              </div>
-            </form>
-          </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginRight: "30px",
+        }}
+      >
+        <div style={{ margin: "10px 20px" }}>
+          <StartButton text={"Open with Rader"} />
         </div>
-      ) : (
-        <></> // showFlagがfalseの場合はModalは表示しない
-      )}
+        <div style={{ margin: "10px 20px" }}>
+          <StartButton
+            text={"Open CSV File"}
+            onClick={() => inputRef.current.click()}
+          />
+          <input hidden ref={inputRef} type="file" onChange={CSVSubmit} />
+        </div>
+      </div>
+      {modalConfig && <MyModal {...modalConfig} />}
       <Loader loaderFlag={showLoader} />
+      {dialogConfig && <MyDialog {...dialogConfig} />}
     </>
   );
 };
