@@ -342,12 +342,21 @@ const EditPage = () => {
       try {
         // 商品リストに追加
         let dataList_ = dataList;
+        console.log(res.data);
         dataList_.concat(res.data);
-        setDataList(dataList_);
+        setDataList((prevState) => {
+          const state = prevState.slice(0, dataList.length);
+          res.data.forEach((value) => state.push(value));
+          SetArray(state, "Data");
+          return state;
+        });
+
         // 新しいカラムを追加
         let newColumnList = columnList;
         for (const newcol of Object.keys(res.data[0])) {
           if (
+            newcol !== "" &&
+            newcol !== "URL" &&
             newcol !== "id" &&
             newcol !== "商品名" &&
             newcol !== "画像" &&
@@ -356,6 +365,7 @@ const EditPage = () => {
             newColumnList.push(newcol);
           }
         }
+        SetArray(newColumnList, "Column");
         setColumnList(newColumnList);
       } catch (e) {
         window.alert(e);
