@@ -8,7 +8,7 @@ import {
     CategoryScale,
   } from "chart.js";
 import Chart from "chart.js/auto"
-import React, { useEffect,useState, useRef } from "react";
+import React, { useEffect,useState, useRef, useCallback } from "react";
 import "../styles/radarChartPage.css"
 import MenuBar from "../components/MenuBar"
 import StartButton from "../components/StartButton";
@@ -178,7 +178,7 @@ const RadarChartComponent = () => {
     const [image, setImage] = useState()
     const [errorMessage, setErrorMessage] = useState('')
     const URL = 'http://127.0.0.1:8000/images/' //適宜設定
-    let [chart,setChart] = useState({})
+    let chart = {}
 
     const randomColor = () => {
         const r = Math.round(Math.random() * 255);
@@ -277,7 +277,7 @@ const RadarChartComponent = () => {
                     usePointStyle: true,
                     boxWidth: 20,
                     font:{
-                        size: 15,
+                        size: 18,
                     }
                 }
             },
@@ -325,18 +325,21 @@ const RadarChartComponent = () => {
         return <canvas ref={canvasRef} />;
     };
 
+    const titleStyle = []
+    for(let i = 0; i < testData.length; i++){
+        titleStyle.push("radar-janome")
+    }
+    const [buttonstyle,setButtonStyle] = useState(titleStyle)
+
     const hiddenData = (index) => {
         if(chart.data.datasets[index].hidden === true){
             chart.data.datasets[index].hidden = false
-            setButtonStyle("radar-janome-after")
+            chart.update()
         }else if(chart.data.datasets[index].hidden === false){
             chart.data.datasets[index].hidden = true
-            setButtonStyle("radar-janome")
+            chart.update()
         }else {}
-        chart.update()
     }
-    
-    const [buttonstyle,setButtonStyle] = useState("radar-janome")
     
     return (
         <div>
@@ -357,7 +360,9 @@ const RadarChartComponent = () => {
                     return(
                         <div>
                             <div className='radar-data'>
-                            <button className={buttonstyle} onClick={() => hiddenData(index)} />
+                            <button className={buttonstyle[index]} onClick={() => {
+                                hiddenData(index) 
+                            }} />
                                 <div className="radar-datatitle-text">
                                     {data["title"]}
                                 </div>
