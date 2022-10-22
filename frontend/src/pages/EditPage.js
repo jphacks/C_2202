@@ -459,7 +459,9 @@ const EditPage = () => {
           <table align="center">
             <thead>
               <tr>
-                <th className="column-cell item-title-cell data-header"></th>
+                <th className="column-cell item-title-cell data-header">
+                  {dataList.length === 0 ? "Press the button below" : ""}
+                </th>
                 {columnList.map((column, index) => {
                   return (
                     <th
