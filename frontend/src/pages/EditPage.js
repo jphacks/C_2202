@@ -8,7 +8,7 @@ import React, {
 import axios from "axios";
 // import Draggable from "react-draggable";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import "../styles/startPage.css";
 import "../styles/editPage.css";
@@ -276,41 +276,41 @@ const EditPage = () => {
   // リンクから商品情報を取得
 
   const toBlobZip = (base64) => {
-    console.log(base64.toString().replace(/^.*,/, ''))
-    const bin = decodeURIComponent(atob(base64.toString().replace(/^.*,/, '')));
+    console.log(base64.toString().replace(/^.*,/, ""));
+    const bin = decodeURIComponent(atob(base64.toString().replace(/^.*,/, "")));
     const buffer = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i++) {
       buffer[i] = bin.charCodeAt(i);
     }
     const blob = new Blob([buffer.buffer], {
-      type: 'text/csv'
+      type: "text/csv",
     });
     return blob;
-  }
-  
-  const element = HTMLElement;
+  };
+
+  // const element = HTMLElement;
   const sendProductData = () => {
-    setShowLoader(true); 
-    console.log(dataList)
+    setShowLoader(true);
+    console.log(dataList);
     axios
-      .post(backendURL+"/newdata/download/", {
+      .post(backendURL + "/newdata/download/", {
         dataList: dataList,
       })
-      .then(function(res){
-        console.log(res)
+      .then(function (res) {
+        console.log(res);
         const blob = toBlobZip(res.data);
         const url = window.URL.createObjectURL(blob);
-        console.log(blob)
-        console.log(url)
-        const link = document.querySelector('#CSV');
-        console.log(link)
+        console.log(blob);
+        console.log(url);
+        const link = document.querySelector("#CSV");
+        console.log(link);
         link.href = url;
         link.download = "output";
         link.click();
-        console.log("送信完了")
+        console.log("送信完了");
         setShowLoader(false);
-      })
-  }
+      });
+  };
 
   const productSubmit = (e) => {
     getProductData(e.target[0].value);
@@ -325,34 +325,47 @@ const EditPage = () => {
       .post(backendURL + "/edit/url/", {
         productURL: productURL,
       })
-      .then(function (res) {
+      .then(async (res) => {
         console.log(res.data);
-        try {
-          // 商品リストに追加
-          let newDataList = dataList;
-          dataList.push(res.data);
-          setDataList(newDataList);
-          SetArray(newDataList, "Data");
-          // 新しいカラムを追加
-          let newColumnList = columnList;
-          for (const newcol of Object.keys(res.data)) {
-            if (
-              newcol !== "id" &&
-              newcol !== "商品名" &&
-              newcol !== "画像" &&
-              newcol !== "URL" &&
-              !newColumnList.some((col) => newcol === col)
-            ) {
-              newColumnList.push(newcol);
+        if (res.data["ERROR"] !== undefined) {
+          setShowLoader(false);
+          setModalConfig(undefined);
+          const _ = await new Promise((resolve) => {
+            setDialogConfig({
+              onClose: resolve,
+              message: "URLが間違っています。",
+              confirm: false,
+            });
+          });
+          setDialogConfig(undefined);
+        } else {
+          try {
+            // 商品リストに追加
+            let newDataList = dataList;
+            newDataList.push(res.data);
+            setDataList(newDataList);
+            SetArray(newDataList, "Data");
+            // 新しいカラムを追加
+            let newColumnList = columnList;
+            for (const newcol of Object.keys(res.data)) {
+              if (
+                newcol !== "id" &&
+                newcol !== "商品名" &&
+                newcol !== "画像" &&
+                newcol !== "URL" &&
+                !newColumnList.some((col) => newcol === col)
+              ) {
+                newColumnList.push(newcol);
+              }
             }
+            setColumnList(newColumnList);
+            SetArray(newColumnList, "Column");
+          } catch (e) {
+            window.alert(e);
           }
-          setColumnList(newColumnList);
-          SetArray(newColumnList, "Column");
-        } catch (e) {
-          window.alert(e);
+          setShowLoader(false);
+          setModalConfig(undefined);
         }
-        setShowLoader(false);
-        setModalConfig(undefined);
       });
   };
 
@@ -377,50 +390,61 @@ const EditPage = () => {
     setShowLoader(true);
     console.log("enter");
     console.log(CSVfile);
-    axios.post(backendURL + "/newdata/upload/", CSVfile).then(function (res) {
-      console.log(res.data);
-      try {
-        // 商品リストに追加
-        let dataList_ = dataList;
+    try {
+      axios.post(backendURL + "/newdata/upload/", CSVfile).then(async (res) => {
         console.log(res.data);
-        dataList_.concat(res.data);
-        setDataList((prevState) => {
-          const state = prevState.slice(0, dataList.length);
-          res.data.forEach((value) => state.push(value));
-          SetArray(state, "Data");
-          return state;
-        });
+        if (res.data.length === 0) {
+          const _ = await new Promise((resolve) => {
+            setDialogConfig({
+              onClose: resolve,
+              message: "CSVの読み込みに失敗しました。",
+              confirm: false,
+            });
+          });
+          setDialogConfig(undefined);
+        } else {
+          // 商品リストに追加
+          let dataList_ = dataList;
+          console.log(res.data);
+          dataList_.concat(res.data);
+          setDataList((prevState) => {
+            const state = prevState.slice(0, dataList.length);
+            res.data.forEach((value) => state.push(value));
+            SetArray(state, "Data");
+            return state;
+          });
 
-        // 新しいカラムを追加
-        let newColumnList = columnList;
-        for (const newcol of Object.keys(res.data[0])) {
-          if (
-            newcol !== "" &&
-            newcol !== "URL" &&
-            newcol !== "id" &&
-            newcol !== "商品名" &&
-            newcol !== "画像" &&
-            !newColumnList.some((col) => newcol === col)
-          ) {
-            newColumnList.push(newcol);
+          // 新しいカラムを追加
+          let newColumnList = columnList;
+          for (const newcol of Object.keys(res.data[0])) {
+            if (
+              newcol !== "" &&
+              newcol !== "URL" &&
+              newcol !== "id" &&
+              newcol !== "商品名" &&
+              newcol !== "画像" &&
+              !newColumnList.some((col) => newcol === col)
+            ) {
+              newColumnList.push(newcol);
+            }
           }
+          SetArray(newColumnList, "Column");
+          setColumnList(newColumnList);
         }
-        SetArray(newColumnList, "Column");
-        setColumnList(newColumnList);
-      } catch (e) {
-        window.alert(e);
-      }
-      setShowLoader(false);
-    });
+      });
+    } catch (e) {
+      window.alert(e);
+    }
+    setShowLoader(false);
   };
 
   const goRadar = () => {
-    console.log(dataList)
-  }
+    console.log(dataList);
+  };
 
   return (
     <>
-      {/* <MenuBar /> */}
+      <MenuBar />
       <div class="box-wrapper">
         <div className="edit-title">
           <div className="edit-title-text">Edit Page</div>
@@ -494,10 +518,8 @@ const EditPage = () => {
         }}
       >
         <div style={{ margin: "10px 20px" }}>
-          <Link to ={"/radar"} state={{ state: dataList }}>
-            <StartButton 
-              text={"Open with Rader"} 
-              onClick={() => goRadar()}/>
+          <Link to={"/radar"} state={{ state: dataList }}>
+            <StartButton text={"Open with Rader"} onClick={() => goRadar()} />
           </Link>
         </div>
         <div style={{ margin: "10px 20px" }}>
@@ -515,13 +537,12 @@ const EditPage = () => {
           />
         </div>
         <div style={{ margin: "10px 20px" }}>
-            <StartButton 
-              
-              text={"Download CSV"} 
-              onClick={() => sendProductData()}/>
-              <a id = "CSV"></a>
+          <StartButton
+            text={"Download CSV"}
+            onClick={() => sendProductData()}
+          />
+          <a hidden id="CSV"></a>
         </div>
-        
       </div>
       {modalConfig && <MyModal {...modalConfig} />}
       <Loader loaderFlag={showLoader} />
