@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import csv
 import shutil
 import base64
@@ -21,6 +22,8 @@ origins = [
     'http://localhost:3000',
     'http://localhost:3000/edit/url',
     'http://localhost:8000/edit/url',
+    'http://localhost:3000/newdata/upload',
+    'http://localhost:8000/newdata/upload',
 ]
 
 app.add_middleware(
@@ -77,15 +80,18 @@ def upload_file(upload_file: UploadFile = File(...)):
     finally:
         upload_file.file.close()
     list = []
-    with open(tmp_path, "r", encoding="utf-8_sig") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            dict = {}
-            for k, v in row.items():
-                if k == "":
-                    print("enpty column")
-                else:  
-                    k, v = format(k, v)
-                    dict[k] = v
-            list.append(dict)
-    return list
+    try:
+        with open(tmp_path, "r", encoding="utf-8_sig") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                dict = {}
+                for k, v in row.items():
+                    if k == "":
+                        print("enpty column")
+                    else:  
+                        k, v = format(k, v)
+                        dict[k] = v
+                list.append(dict)
+        return list
+    except:
+        return []
