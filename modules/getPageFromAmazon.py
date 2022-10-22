@@ -9,8 +9,8 @@ def getPageFromAmazon(url):
 
     # ドライバーまでのpathは各自変更してください
     # path = "C:/Users/jayji/Downloads/chromedriver_win32/chromedriver.exe"
-    # path = "C:/Users/Riku/Downloads/chromedriver_win32/chromedriver"
-    path = "C:/Users/inher/chromedriver"
+    path = "C:/Users/Riku/Downloads/chromedriver_win32/chromedriver"
+    # path = "C:/Users/inher/chromedriver"
     driver = webdriver.Chrome(path, options=options)
     driver.get(url)
     driver.implicitly_wait(10)   

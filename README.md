@@ -1,6 +1,6 @@
 # HYOKA
 
-[![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2022/08/JPHACKS2022_ogp.jpg)](https://www.youtube.com/watch?v=LUPQFB4QyVo)
+[![IMAGE ALT TEXT HERE](image.png)](https://www.youtube.com/watch?v=D9weZ2ArozM)
 
 ## 製品概要
 
