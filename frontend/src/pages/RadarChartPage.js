@@ -23,6 +23,25 @@ const RadarChartComponent = () => {
         state.state[i].id = i
         state.state[i].title = state.state[i]["商品名"]
     }
+    // for(let i = 0; i < state.state.length; i++){
+    //     //i番目のkeyのリスト取得
+    //     let stateKeyList = Object.keys(state.state[i])
+    //     for (let j = 0; j < stateKeyList.length; j++){
+    //         //i番目のkeyを、全体で検索
+    //         console.log(stateKeyList[j])
+    //         for(let k = 0; k < state.state.length; k++){
+    //             console.log("検索："+k)
+    //             console.log(stateKeyList[j])
+    //             if(!(stateKeyList[j] in state.state[k])){
+    //                 //無い場合
+    //                 console.log("無かった")
+    //                 delete state.state[i][stateKeyList[j]]
+    //                 console.log("削除しました")
+    //             }
+    //         }
+    //         console.log("後"+state.state[i])
+    //     }
+    // }
     // const testData = [
     //     {
     //         id: 0,
@@ -175,13 +194,11 @@ const RadarChartComponent = () => {
     // ];
     const testData = state.state
     let columnList = []
+    let prevColumnList = []
     let valueList = []
     let dataList = []
     let isFirst = true
-    const data = {
-            labels: columnList,
-            datasets: []
-    }
+
     const [showImportCSV, setShowImportCSV] = useState(false); // Modalコンポーネントの表示の状態を定義する
     const [image, setImage] = useState()
     const [errorMessage, setErrorMessage] = useState('')
@@ -200,12 +217,40 @@ const RadarChartComponent = () => {
         valueList.push(new Array())
     }
 
+    function addColumn(key,value){
+        if(!isNaN(value) && key !== "id" && value !== ""){
+            columnList.push(key)
+        }
+        prevColumnList = columnList
+
+    }
+    let removars = []
+    function deleteColumn(key){
+        for(let i = 0; i < state.state.length; i++){
+            console.log(prevColumnList[key])
+            console.log(state.state[i][prevColumnList[key]])
+            if(state.state[i][prevColumnList[key]] === ""){
+                removars.push(prevColumnList[key])
+                // columnList.some(function(v, i){
+                //     if (v===columnList[key]) columnList.splice(key,1);    
+                // });
+                console.log("削除した")
+                console.log(prevColumnList)
+            }
+        }
+        console.log(removars)
+        columnList = prevColumnList.filter(function(v){
+            return ! removars.includes(v);
+        });
+        console.log(columnList)
+    }
+
     function addData(key,value,i){
         if(key === "title"){
             dataList[i][key] = value
         }
-
-        if(!isNaN(value) && key !== "id"){
+        console.log(columnList)
+        if(!isNaN(value) && key !== "id" && columnList.indexOf(key) !== -1){
             const uniqueKey = testData.map(function (p) {
                 return p[key];
             });
@@ -214,12 +259,6 @@ const RadarChartComponent = () => {
             dataList[i][key] = value / maxValue * 100
         }
     }
-    function addColumn(key,value){
-        if(!isNaN(value) && key !== "id"){
-            columnList.push(key)
-        }
-    }
-
     for (const i in testData){
         if(isFirst === true){
             for (const key in testData[i]){
@@ -227,10 +266,19 @@ const RadarChartComponent = () => {
             }
             isFirst = false
         }
+    }
+    for (const i in prevColumnList){
+        deleteColumn(i)
+    }
+    for (const i in testData){
         for (const key in testData[i]){
             addData(key,testData[i][key],i)
         }
     }
+    const data = {
+        labels: columnList,
+        datasets: []
+}
 
     for(let i = 0; i < testData.length; i++){
         data.datasets.push(new Object())
