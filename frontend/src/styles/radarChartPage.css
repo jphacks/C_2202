@@ -1,0 +1,112 @@
+
+.radar-columnContainer {
+    align-items: center;
+    width: 40%;
+    height: 40%;
+    left: 5%;
+    /* display: flex; */
+    position: sticky;
+    /* flex: 1; */
+}
+
+body {
+    
+    background-color: #283654;
+}
+
+.radar-container {
+    display: flex;
+    height: 100%;
+}
+
+.radar-p{
+    flex: 1;
+    justify-content: center;
+    margin : auto ;
+}
+.radar-textcolor{
+    color: #ededed;
+    margin: 3%;
+
+}
+.radar-title {
+  margin: 1% auto;
+  width: 9em;
+  font-size: 28px;
+  font: bold;
+  padding-top: 20px;
+  border-bottom: 1px solid #ccffee;
+}
+.radar-title-text {
+  color: #d2d2d2;
+  text-align: center;
+}
+
+/* ここから */
+.radar-box{
+    height: 400px;
+    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    text-align: center;
+}
+.radar-box::-webkit-scrollbar{
+    display: none;
+  }
+
+
+.radar-item{
+    justify-content: flex-end;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.radar-data{
+    display: flex;
+    margin: 1% auto;
+    width: 19em;
+    padding-top: 20px;
+    align-items: center;
+    border-bottom: 1px solid #CCFFEE;
+}
+.radar-datatitle-text {
+    flex: 1;
+    font: bold;
+    font-size: 16px;
+    width: 10em;
+    color: #d2d2d2;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1px;
+  }
+.radar-start-button {
+    margin-top: 10%;
+    text-align: right;
+
+}
+
+.radar-radis {
+    margin-right: 10px;
+    width:15px;
+    height:15px;
+    background:white;
+    border-radius:100%;
+}
+
+.radar-janome{
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 4px solid #88abda;
+}
+.radar-janome-after{
+    content: "";
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #ebebeb;
+}
+/* ここまで */
