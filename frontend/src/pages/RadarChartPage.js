@@ -227,18 +227,12 @@ const RadarChartComponent = () => {
     let removars = []
     function deleteColumn(key){
         for(let i = 0; i < state.state.length; i++){
-            console.log(prevColumnList[key])
-            console.log(state.state[i][prevColumnList[key]])
             if(state.state[i][prevColumnList[key]] === ""){
                 removars.push(prevColumnList[key])
-                // columnList.some(function(v, i){
-                //     if (v===columnList[key]) columnList.splice(key,1);    
-                // });
                 console.log("削除した")
                 console.log(prevColumnList)
             }
         }
-        console.log(removars)
         columnList = prevColumnList.filter(function(v){
             return ! removars.includes(v);
         });
@@ -249,7 +243,6 @@ const RadarChartComponent = () => {
         if(key === "title"){
             dataList[i][key] = value
         }
-        console.log(columnList)
         if(!isNaN(value) && key !== "id" && columnList.indexOf(key) !== -1){
             const uniqueKey = testData.map(function (p) {
                 return p[key];
