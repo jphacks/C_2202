@@ -198,7 +198,6 @@ const RadarChartComponent = () => {
   let dataList = [];
   let isFirst = true;
 
-  const [showImportCSV, setShowImportCSV] = useState(false); // Modalコンポーネントの表示の状態を定義する
   const [image, setImage] = useState();
   const [errorMessage, setErrorMessage] = useState("");
   const URL = "http://127.0.0.1:8000/images/"; //適宜設定
@@ -294,24 +293,6 @@ const RadarChartComponent = () => {
     if (!e.target.files) return;
     const img = e.target.files[0];
     setImage(img);
-  };
-  const Submit = async () => {
-    const formdata = new FormData();
-    formdata.append("upload_file", image);
-    const requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-    const response = await fetch(URL, requestOptions);
-    const data = await response.json();
-  };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    Submit();
-  };
-  const OutputCSV = () => {
-    // console.log("CSV出力をする");
-    setShowImportCSV(true);
   };
 
   const options = {
@@ -424,57 +405,12 @@ const RadarChartComponent = () => {
           >
             <div style={{ margin: "10px 20px" }}>
               <Link to={"/"}>
-                <StartButton text={"Back"} buttonClick={OutputCSV} />
+                <StartButton text={"Back"} />
               </Link>
-            </div>
-            <div style={{ margin: "10px 20px" }}>
-              <StartButton text={"Output CSV"} buttonClick={OutputCSV} />
             </div>
           </div>
         </div>
       </div>
-      {showImportCSV ? ( // showFlagがtrueだったらModalを表示する
-        <div className="overlay">
-          <div
-            className="modal-content"
-            onClick={(event) => {
-              event.stopPropagation();
-            }}
-          >
-            <div className="mb-3">
-              <form onSubmit={handleSubmit}>
-                <div>
-                  <input
-                    id="img"
-                    type="file"
-                    accept="image/*,.png,.jpg,.jpeg,.gif"
-                    onChange={getImage}
-                  />
-                </div>
-              </form>
-              <br />
-              <button className="button is-primary" type="submit">
-                Submit
-              </button>
-            </div>
-            <div className="enter-button">
-              <button
-                className="btn btn-primary"
-                style={{
-                  backgroundColor: "#4d638c",
-                  color: "#d2d2d2",
-                  width: "8rem",
-                }}
-                // onClick={props.onClicked}
-              >
-                Enter
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <></> // showFlagがfalseの場合はModalは表示しない
-      )}
     </div>
   );
 };
